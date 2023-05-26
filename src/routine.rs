@@ -1,11 +1,13 @@
-use crate::benchmark::BenchmarkConfig;
-use crate::connection::OutgoingMessage;
-use crate::measurement::Measurement;
-use crate::report::{BenchmarkId, Report, ReportContext};
-use crate::{ActualSamplingMode, Bencher, Criterion};
-use std::hint::black_box;
-use std::marker::PhantomData;
-use std::time::Duration;
+use {
+    crate::{
+        benchmark::BenchmarkConfig,
+        connection::OutgoingMessage,
+        measurement::Measurement,
+        report::{BenchmarkId, Report, ReportContext},
+        ActualSamplingMode, Bencher, Criterion,
+    },
+    std::{hint::black_box, marker::PhantomData, time::Duration},
+};
 
 /// PRIVATE
 pub(crate) trait Routine<M: Measurement, T: ?Sized> {
@@ -248,10 +250,16 @@ where
         let mut results = Vec::with_capacity(iters.len());
         results.resize(iters.len(), 0.0);
         for (i, iters) in iters.iter().enumerate() {
-            b.iters = *iters;
-            (*f)(&mut b, black_box(parameter));
-            b.assert_iterated();
-            results[i] = m.to_f64(&b.value);
+            let stack_alloc = i % 2048;
+            alloca::with_alloca(
+                stack_alloc, /* how much bytes we want to allocate */
+                |_shifting_stack_space: &mut [core::mem::MaybeUninit<u8>] /* dynamically stack allocated slice itself */| {
+                    b.iters = *iters;
+                    (*f)(&mut b, black_box(parameter));
+                    b.assert_iterated();
+                    results[i] = m.to_f64(&b.value);
+                },
+            );
         }
         results
     }
@@ -280,6 +288,8 @@ where
             }
 
             b.iters = b.iters.wrapping_mul(2);
+            // To make sure we offset the test at least with 0-64 bytes with alloca
+            b.iters = b.iters.min(64);
         }
     }
 }

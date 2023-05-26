@@ -34,6 +34,7 @@ version.workspace = true
 exclude = ["book/*"]
 
 [dependencies]
+alloca = "0.4"
 anes = "0.1.4"
 criterion-plot = { path = "plot", version = "0.7.0" }
 itertools = "0.13"
