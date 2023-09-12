@@ -114,10 +114,20 @@ impl LinePlotConfig {
                 let to = max_id.throughput.as_ref().unwrap();
 
                 let (from_bytes, to_bytes) = match (from, to) {
+                    (Throughput::Bits(from), Throughput::Bits(to)) => (from, to),
                     (Throughput::Bytes(from), Throughput::Bytes(to)) => (from, to),
                     (Throughput::BytesDecimal(from), Throughput::BytesDecimal(to)) => (from, to),
                     (Throughput::Elements(from), Throughput::Elements(to)) => (from, to),
-                    (Throughput::Bits(from), Throughput::Bits(to)) => (from, to),
+                    (
+                        Throughput::ElementsAndBytes {
+                            elements: _,
+                            bytes: from,
+                        },
+                        Throughput::ElementsAndBytes {
+                            elements: _,
+                            bytes: to,
+                        },
+                    ) => (from, to),
                     _ => unreachable!("throughput types expected to be equal"),
                 };
 

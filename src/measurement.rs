@@ -195,12 +195,16 @@ impl ValueFormatter for DurationFormatter {
         values: &mut [f64],
     ) -> &'static str {
         match *throughput {
+            Throughput::Bits(bits) => self.bits_per_second(bits as f64, typical, values),
             Throughput::Bytes(bytes) => self.bytes_per_second(bytes as f64, typical, values),
             Throughput::BytesDecimal(bytes) => {
                 self.bytes_per_second_decimal(bytes as f64, typical, values)
             }
             Throughput::Elements(elems) => self.elements_per_second(elems as f64, typical, values),
-            Throughput::Bits(bits) => self.bits_per_second(bits as f64, typical, values),
+            // The caller should be formatting the bytes and elements separately.
+            Throughput::ElementsAndBytes { elements, bytes: _ } => {
+                self.elements_per_second(elements as f64, typical, values)
+            }
         }
     }
 
