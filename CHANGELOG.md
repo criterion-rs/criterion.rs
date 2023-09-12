@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+ - `Throughput::ElementsAndBytes` added to allow the text summary to report throughput in both units simultaneously.
+
 ## [0.7.0] - 2025-07-25
 - Bump version of criterion-plot to align dependencies.
 
