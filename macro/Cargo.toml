@@ -1,3 +1,5 @@
+[workspace]
+
 [package]
 name = "criterion-macro"
 version = "0.4.0"
@@ -24,5 +26,3 @@ criterion = { version = "0.4.0", path = "..", default-features = false }
 
 [[bench]]
 name = "test_macro_bench"
-
-[workspace]
