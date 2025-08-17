@@ -76,3 +76,13 @@ impl AsyncExecutor for AsyncStdExecutor {
         async_std::task::block_on(future)
     }
 }
+
+/// Runs futures on the 'compio' crate's runtime
+#[cfg(feature = "async_compio")]
+pub struct CompioExecutor;
+#[cfg(feature = "async_compio")]
+impl AsyncExecutor for CompioExecutor {
+    fn block_on<T>(&self, future: impl Future<Output = T>) -> T {
+        compio::runtime::Runtime::new().unwrap().block_on(future)
+    }
+}
