@@ -87,7 +87,7 @@ stable = [
     "async_std",
     "async_compio",
 ]
-default = ["async_compio", "plotters", "cargo_bench_support"]
+default = ["rayon", "plotters", "cargo_bench_support"]
 
 # This is a legacy feature that no longer does anything, but removing it would be a semver break.
 real_blackbox = []
