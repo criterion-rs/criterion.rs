@@ -16,7 +16,7 @@
 
 <div align="center">
  <a href="https://github.com/bheisler/criterion.rs/actions/workflows/ci.yaml">
-        <img src="https://img.shields.io/github/checks-status/rgeometry/rgeometry/main?label=tests&logo=github" alt="GitHub branch checks state">
+        <img src="https://img.shields.io/github/checks-status/bheisler/criterion.rs/master?logo=github&label=tests" alt="GitHub branch checks state">
     </a>
     |
     <a href="https://crates.io/crates/criterion">
