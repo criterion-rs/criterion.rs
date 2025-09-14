@@ -15,8 +15,7 @@ pub(crate) fn t_test(
     y_range.start = 0.0;
     y_range.end *= 1.1;
 
-    let size = size.unwrap_or(SIZE);
-    let root_area = new_svg_drawing_area(&path, size);
+    let root_area = new_svg_drawing_area(&path, size.unwrap_or(SIZE));
 
     let mut chart = ChartBuilder::on(&root_area)
         .margin((5).percent())
