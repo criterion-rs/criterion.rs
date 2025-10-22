@@ -15,13 +15,9 @@
 </div>
 
 <div align="center">
- <a href="https://github.com/criterion-rs/criterion.rs/actions/workflows/ci.yaml">
-        <img src="https://img.shields.io/github/checks-status/criterion-rs/criterion.rs/main?label=tests&logo=github" alt="GitHub branch checks state">
-    </a>
+    <a href="https://github.com/criterion-rs/criterion.rs/actions/workflows/ci.yaml"><img src="https://img.shields.io/github/check-runs/criterion-rs/criterion.rs/master?label=tests&logo=github" alt="GitHub branch checks state"></a>
     |
-    <a href="https://crates.io/crates/criterion">
-        <img src="https://img.shields.io/crates/v/criterion.svg" alt="Crates.io">
-    </a>
+    <a href="https://crates.io/crates/criterion"><img src="https://img.shields.io/crates/v/criterion.svg" alt="Crates.io"></a>
 </div>
 
 Criterion.<span></span>rs helps you write fast code by detecting and measuring performance improvements or regressions, even small ones, quickly and accurately. You can optimize with confidence, knowing how each change affects the performance of your code.
