@@ -11,12 +11,12 @@
     |
     <a href="https://docs.rs/crate/criterion/">Released API Docs</a>
     |
-    <a href="https://github.com/bheisler/criterion.rs/blob/master/CHANGELOG.md">Changelog</a>
+    <a href="https://github.com/criterion-rs/criterion.rs/blob/master/CHANGELOG.md">Changelog</a>
 </div>
 
 <div align="center">
- <a href="https://github.com/bheisler/criterion.rs/actions/workflows/ci.yaml">
-        <img src="https://img.shields.io/github/checks-status/rgeometry/rgeometry/main?label=tests&logo=github" alt="GitHub branch checks state">
+ <a href="https://github.com/criterion-rs/criterion.rs/actions/workflows/ci.yaml">
+        <img src="https://img.shields.io/github/checks-status/criterion-rs/criterion.rs/main?label=tests&logo=github" alt="GitHub branch checks state">
     </a>
     |
     <a href="https://crates.io/crates/criterion">
@@ -106,25 +106,25 @@ One great way to contribute to Criterion.<span></span>rs is to use it for your o
 
 Code or documentation improvements in the form of pull requests are also welcome. If you're not
 sure what to work on, try checking the
-[Beginner label](https://github.com/bheisler/criterion.rs/issues?q=is%3Aissue+is%3Aopen+label%3ABeginner).
+[Beginner label](https://github.com/criterion-rs/criterion.rs/issues?q=is%3Aissue+is%3Aopen+label%3ABeginner).
 
-If your issues or pull requests have no response after a few days, feel free to ping me (@bheisler).
+If your issues or pull requests have no response after a few days, feel free to ping criterion-rs maintainers (@berkus and/or @lemmih).
 
-For more details, see the [CONTRIBUTING.md file](https://github.com/bheisler/criterion.rs/blob/master/CONTRIBUTING.md).
+For more details, see the [CONTRIBUTING.md file](https://github.com/criterion-rs/criterion.rs/blob/master/CONTRIBUTING.md).
 
 ### Compatibility Policy
 
 Criterion.<span></span>rs supports the last three stable minor releases of Rust. At time of
-writing, this means Rust 1.59 or later. Older versions may work, but are not guaranteed.
+writing, this means Rust 1.88 or later. Older versions may work, but are not guaranteed.
 
-Currently, the oldest version of Rust believed to work is 1.57. Future versions of Criterion.<span></span>rs may
+Currently, the oldest version of Rust believed to work is 1.80. Future versions of Criterion.<span></span>rs may
 break support for such old versions, and this will not be considered a breaking change. If you
 require Criterion.<span></span>rs to work on old versions of Rust, you will need to stick to a
 specific patch version of Criterion.<span></span>rs.
 
 ### Maintenance
 
-Criterion.<span></span>rs was originally created by Jorge Aparicio [(@japaric)](https://github.com/japaric) and is currently being maintained by Brook Heisler [(@bheisler)](https://github.com/bheisler).
+Criterion.<span></span>rs was originally created by Jorge Aparicio (@japaric) and is currently being maintained by David Himmelstrup (@lemmih) and Berkus Karchebnyi (@berkus).
 
 ### License
 
