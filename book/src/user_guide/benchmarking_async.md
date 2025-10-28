@@ -47,7 +47,6 @@ request.
 | Crate     | Feature                       | Executor Struct                                                    |
 | --------- | ----------------------------- | ------------------------------------------------------------------ |
 | Tokio     | "async_tokio"                 | In `tokio::runtime`, `Runtime`, `&Runtime`, `Handle`, or `&Handle` |
-| async-std | "async_std" (note underscore) | `AsyncStdExecutor`                                                 |
 | Smol      | "async_smol"                  | `SmolExecutor`                                                     |
 | futures   | "async_futures"               | `FuturesExecutor`                                                  |
 | Other     | "async"                       |                                                                    |

@@ -58,7 +58,6 @@ smol = { version = "2.0", default-features = false, optional = true }
 tokio = { version = "1.0", default-features = false, features = [
     "rt",
 ], optional = true }
-async-std = { version = "1.13", optional = true }
 
 [dependencies.plotters]
 version = "^0.3.2"
@@ -83,7 +82,6 @@ stable = [
     "async_futures",
     "async_smol",
     "async_tokio",
-    "async_std",
 ]
 default = ["rayon", "plotters", "cargo_bench_support"]
 
@@ -104,7 +102,6 @@ async = []
 async_futures = ["dep:futures", "async"]
 async_smol = ["dep:smol", "async"]
 async_tokio = ["dep:tokio", "async"]
-async_std = ["dep:async-std", "async"]
 
 # Make Criterion.rs generate its own plots (as opposed to using cargo-criterion)
 html_reports = []
@@ -125,4 +122,4 @@ bench = false
 
 # Enable all of the async runtimes for the docs.rs output
 [package.metadata.docs.rs]
-features = ["async_futures", "async_smol", "async_std", "async_tokio"]
+features = ["async_futures", "async_smol", "async_tokio"]
