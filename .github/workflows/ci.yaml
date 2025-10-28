@@ -5,12 +5,11 @@ on:
   pull_request:
     branches:
       - master
-      - version-0.4
 
 name: tests
 env:
   CARGO_TERM_COLOR: always
-  MSRV: 1.80.0
+  MSRV: 1.81.0
 
 jobs:
   ci:
@@ -99,7 +98,6 @@ jobs:
 
       - name: check typos
         uses: crate-ci/typos@v1.23.5
-
 
   # Make sure the library builds with all dependencies downgraded to their
   # oldest versions allowed by the semver spec. This ensures we have not
