@@ -49,7 +49,7 @@ To start with Criterion.<span></span>rs, add the following to your `Cargo.toml` 
 
 ```toml
 [dev-dependencies]
-criterion = { version = "0.5", features = ["html_reports"] }
+criterion = { version = "0.7", features = ["html_reports"] }
 
 [[bench]]
 name = "my_benchmark"
