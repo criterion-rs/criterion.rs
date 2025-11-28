@@ -1,12 +1,13 @@
-use super::*;
-use crate::AxisScale;
-use itertools::Itertools;
-use plotters::coord::{
-    ranged1d::{AsRangedCoord, ValueFormatter as PlottersValueFormatter},
-    Shift,
+use {
+    super::*,
+    crate::AxisScale,
+    itertools::Itertools,
+    plotters::coord::{
+        ranged1d::{AsRangedCoord, ValueFormatter as PlottersValueFormatter},
+        Shift,
+    },
+    std::{cmp::Ordering, path::Path},
 };
-use std::cmp::Ordering;
-use std::path::Path;
 
 const NUM_COLORS: usize = 8;
 static COMPARISON_COLORS: [RGBColor; NUM_COLORS] = [
@@ -159,7 +160,7 @@ fn line_comparison_series_data<'a>(
                 (x, y[0])
             })
             .collect();
-        tuples.sort_by(|&(ax, _), &(bx, _)| (ax.partial_cmp(&bx).unwrap_or(Ordering::Less)));
+        tuples.sort_by(|&(ax, _), &(bx, _)| ax.partial_cmp(&bx).unwrap_or(Ordering::Less));
         let function_name = key.as_ref();
         let (xs, ys): (Vec<_>, Vec<_>) = tuples.into_iter().unzip();
         series_data.push((function_name, xs, ys));
