@@ -1,16 +1,24 @@
-use super::{debug_script, gnuplot_escape};
-use super::{DARK_BLUE, DEFAULT_FONT, KDE_POINTS, LINEWIDTH, POINT_SIZE, SIZE};
-use crate::kde;
-use crate::measurement::ValueFormatter;
-use crate::plot::LinePlotConfig;
-use crate::report::{BenchmarkId, ValueType};
-use crate::stats::univariate::Sample;
-use crate::AxisScale;
-use criterion_plot::prelude::*;
-use itertools::Itertools;
-use std::cmp::Ordering;
-use std::path::{Path, PathBuf};
-use std::process::Child;
+use {
+    super::{
+        debug_script, gnuplot_escape, DARK_BLUE, DEFAULT_FONT, KDE_POINTS, LINEWIDTH, POINT_SIZE,
+        SIZE,
+    },
+    crate::{
+        kde,
+        measurement::ValueFormatter,
+        plot::LinePlotConfig,
+        report::{BenchmarkId, ValueType},
+        stats::univariate::Sample,
+        AxisScale,
+    },
+    criterion_plot::prelude::*,
+    itertools::Itertools,
+    std::{
+        cmp::Ordering,
+        path::{Path, PathBuf},
+        process::Child,
+    },
+};
 
 const NUM_COLORS: usize = 8;
 static COMPARISON_COLORS: [Color; NUM_COLORS] = [
@@ -103,7 +111,7 @@ pub(crate) fn line_comparison(
                 (x, y[0])
             })
             .collect();
-        tuples.sort_by(|&(ax, _), &(bx, _)| (ax.partial_cmp(&bx).unwrap_or(Ordering::Less)));
+        tuples.sort_by(|&(ax, _), &(bx, _)| ax.partial_cmp(&bx).unwrap_or(Ordering::Less));
         let (xs, ys): (Vec<_>, Vec<_>) = tuples.into_iter().unzip();
 
         let function_name = key.as_ref().map(|string| gnuplot_escape(string));
