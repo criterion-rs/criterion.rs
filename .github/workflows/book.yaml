@@ -78,7 +78,7 @@ jobs:
           gh api \
             -X PATCH \
             -H "Accept: application/vnd.github+json" \
-            /orgs/criterion-rs/packages/container/criterion.rs-book/visibility \
+            /orgs/criterion-rs/packages/container/criterion.rs-book \
             -f visibility=public
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v4
