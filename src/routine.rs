@@ -297,8 +297,6 @@ where
             }
 
             b.iters = b.iters.wrapping_mul(2);
-            // To make sure we offset the test at least with 0-64 bytes with alloca
-            b.iters = b.iters.min(64);
         }
     }
 }
