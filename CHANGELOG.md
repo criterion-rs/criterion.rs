@@ -7,10 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.8.0](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.7.0...criterion-v0.8.0) - 2025-11-29
+
+### BREAKING
+
+- Drop async-std support
+
+### Changed
+
+- Bump MSRV to 1.86, stable to 1.91.1
+
 ### Added
- - `Throughput::ElementsAndBytes` added to allow the text summary to report throughput in both units simultaneously.
+
+- Add ability to plot throughput on summary page.
+- Add support for reporting throughput in elements and bytes - `Throughput::ElementsAndBytes` allows the text summary to report throughput in both units simultaneously.
+- Add alloca-based memory layout randomisation to mitigate memory effects on measurements.
+- Add doc comment to benchmark runner in criterion_group macro (removes linter warnings)
+
+### Fixed
+
+- Fix plotting NaN bug
+
+### Other
+
+- Remove Master API Docs links temporarily while we restore the docs publishing.
 
 ## [0.7.0] - 2025-07-25
+
 - Bump version of criterion-plot to align dependencies.
 
 ## [0.6.0] - 2025-05-17
