@@ -1,6 +1,6 @@
 # Timing Loops
 
-The [`Bencher`](https://bheisler.github.io/criterion.rs/criterion/struct.Bencher.html) structure
+The [`Bencher`](https://criterion-rs.github.io/criterion/struct.Bencher.html.FIXME) structure
 provides a number of functions which implement different timing loops for measuring the performance
 of a function. This page discusses how these timing loops work and which one is appropriate for
 different situations.
@@ -41,21 +41,21 @@ could run out of memory while collecting the values to drop.
 timing loops take two closures rather than one. The first closure takes no arguments and returns
 a value of type `T` - this is used to generate setup data. For example, the setup function might
 clone a vector of unsorted data for use in benchmarking a sorting function. The second closure
-is the function to benchmark, and it takes a `T` (for `iter_batched`) or `&mut T` (for 
+is the function to benchmark, and it takes a `T` (for `iter_batched`) or `&mut T` (for
 `iter_batched_ref`).
 
 These two timing loops generate a batch of inputs and measure the time to execute the benchmark on
 all values in the batch. As with `iter_with_large_drop` they also collect the values returned from
 the benchmark into a `Vec` and drop it later without timing the drop. Then another batch of inputs
 is generated and the process is repeated until enough iterations of the benchmark have been measured.
-Keep in mind that this is only necessary if the benchmark modifies the input - if the input is 
+Keep in mind that this is only necessary if the benchmark modifies the input - if the input is
 constant then one input value can be reused and the benchmark should use `iter` instead.
 
 Both timing loops accept a third parameter which controls how large a batch is. If the batch size
 is too large, we might run out of memory generating the inputs and collecting the outputs. If it's
 too small, we could introduce more measurement overhead than is necessary. For ease of use, Criterion
-provides three pre-defined choices of batch size, defined by the 
-[`BatchSize`](https://bheisler.github.io/criterion.rs/criterion/enum.BatchSize.html) enum - 
+provides three pre-defined choices of batch size, defined by the
+[`BatchSize`](https://criterion-rs.github.io/criterion/enum.BatchSize.html.FIXME) enum -
 `SmallInput`, `LargeInput` and `PerIteration`. It is also possible (though not recommended) to set
 the batch size manually.
 
@@ -88,7 +88,7 @@ more control over the batch size which may be necessary in some situations.
 ## `iter_custom`
 
 This is a special "timing loop" that relies on you to do your own timing. Where the other timing
-loops take a lambda to call N times in a loop, this takes a lambda of the form 
+loops take a lambda to call N times in a loop, this takes a lambda of the form
 `FnMut(iters: u64) -> M::Value` - meaning that it accepts the number of iterations and returns
 the measured value. Typically, this will be a `Duration` for the default `WallTime` measurement,
 but it may be other types for other measurements (see the
