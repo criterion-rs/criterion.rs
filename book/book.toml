@@ -1,7 +1,7 @@
 [book]
 title = "Criterion.rs Documentation"
 description = "User Guide and Other Prose Documentation For Criterion.rs"
-author = "Brook Heisler"
+authors = ["Brook Heisler"]
 
 [output.html]
 git-repository-url = "https://github.com/criterion-rs/criterion.rs"
@@ -9,3 +9,4 @@ git-repository-url = "https://github.com/criterion-rs/criterion.rs"
 [output.linkcheck]
 #follow-web-links = true
 exclude = [ 'crates\.io' ]
+
