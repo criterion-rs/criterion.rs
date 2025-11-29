@@ -252,9 +252,12 @@ where
         for (i, iters) in iters.iter().enumerate() {
             #[cfg(any(target_family = "unix", target_family = "windows"))]
             {
+                // Intentionally vary the stack allocation size to reduce measurement bias from
+                // memory alignment and cache effects.
+                // The shift can go up to a full page size suitable for the system.
                 alloca::with_alloca(
-                    i % page_size::get(), /* how much bytes we want to allocate */
-                    |_shifting_stack_space: &mut [core::mem::MaybeUninit<u8>] /* dynamically stack allocated slice itself */| {
+                    i % page_size::get(), /* how many bytes we want to allocate */
+                    |_shifting_stack_space: &mut [core::mem::MaybeUninit<u8>] /* stack allocated slice itself */| {
                         b.iters = *iters;
                         (*f)(&mut b, black_box(parameter));
                         b.assert_iterated();
