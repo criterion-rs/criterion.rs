@@ -1,6 +1,6 @@
 //! [Criterion]'s plotting library.
 //!
-//! [Criterion]: https://github.com/bheisler/criterion.rs
+//! [Criterion]: https://github.com/criterion-rs/criterion.rs
 //!
 //! **WARNING** This library is criterion's implementation detail and there no plans to stabilize
 //! it. In other words, the API may break at any time without notice.
@@ -369,17 +369,21 @@
 #![allow(clippy::new_without_default)]
 #![allow(clippy::many_single_char_names)]
 
-use std::borrow::Cow;
-use std::fmt;
-use std::fs::File;
-use std::io;
-use std::num::ParseIntError;
-use std::path::Path;
-use std::process::{Child, Command};
-use std::str;
+use std::{
+    borrow::Cow,
+    fmt,
+    fs::File,
+    io,
+    num::ParseIntError,
+    path::Path,
+    process::{Child, Command},
+    str,
+};
 
-use crate::data::Matrix;
-use crate::traits::{Configure, Set};
+use crate::{
+    data::Matrix,
+    traits::{Configure, Set},
+};
 
 mod data;
 mod display;
@@ -1032,8 +1036,7 @@ fn parse_version(version_str: &str) -> Result<Version, Option<ParseIntError>> {
 }
 
 fn scale_factor(map: &map::axis::Map<axis::Properties>, axes: Axes) -> (f64, f64) {
-    use crate::Axes::*;
-    use crate::Axis::*;
+    use crate::{Axes::*, Axis::*};
 
     match axes {
         BottomXLeftY => (

@@ -5,7 +5,7 @@
 //! improvements and regressions, while also being easy to use.
 //!
 //! See
-//! [the user guide](https://bheisler.github.io/criterion.rs/book/index.html)
+//! [the user guide](https://criterion-rs.github.io/book/index.html)
 //! for examples as well as details on the measurement and analysis process,
 //! and the output.
 //!
@@ -25,8 +25,10 @@
 #[cfg(all(feature = "rayon", target_arch = "wasm32"))]
 compile_error!("Rayon cannot be used when targeting wasi32. Try disabling default features.");
 
-use regex::Regex;
-use serde::{Deserialize, Serialize};
+use {
+    regex::Regex,
+    serde::{Deserialize, Serialize},
+};
 
 // Needs to be declared before other modules
 // in order to be usable there.
@@ -56,34 +58,41 @@ mod report;
 mod routine;
 mod stats;
 
-use std::cell::RefCell;
-use std::collections::HashSet;
-use std::env;
-use std::io::{stdout, IsTerminal};
-use std::net::TcpStream;
-use std::path::{Path, PathBuf};
-use std::process::Command;
-use std::sync::{Mutex, MutexGuard};
-use std::time::Duration;
+use std::{
+    cell::RefCell,
+    collections::HashSet,
+    env,
+    io::{stdout, IsTerminal},
+    net::TcpStream,
+    path::{Path, PathBuf},
+    process::Command,
+    sync::{Mutex, MutexGuard},
+    time::Duration,
+};
 
-use criterion_plot::{Version, VersionError};
-use std::sync::OnceLock;
+use {
+    criterion_plot::{Version, VersionError},
+    std::sync::OnceLock,
+};
 
-use crate::benchmark::BenchmarkConfig;
-use crate::connection::Connection;
-use crate::connection::OutgoingMessage;
-use crate::html::Html;
-use crate::measurement::{Measurement, WallTime};
 #[cfg(feature = "plotters")]
 use crate::plot::PlottersBackend;
-use crate::plot::{Gnuplot, Plotter};
-use crate::profiler::{ExternalProfiler, Profiler};
-use crate::report::{BencherReport, CliReport, CliVerbosity, Report, ReportContext, Reports};
+use crate::{
+    benchmark::BenchmarkConfig,
+    connection::{Connection, OutgoingMessage},
+    html::Html,
+    measurement::{Measurement, WallTime},
+    plot::{Gnuplot, Plotter},
+    profiler::{ExternalProfiler, Profiler},
+    report::{BencherReport, CliReport, CliVerbosity, Report, ReportContext, Reports},
+};
 
 #[cfg(feature = "async")]
 pub use crate::bencher::AsyncBencher;
-pub use crate::bencher::Bencher;
-pub use crate::benchmark_group::{BenchmarkGroup, BenchmarkId};
+pub use crate::{
+    bencher::Bencher,
+    benchmark_group::{BenchmarkGroup, BenchmarkId},
+};
 
 fn gnuplot_version() -> &'static Result<Version, VersionError> {
     static GNUPLOT_VERSION: OnceLock<Result<Version, VersionError>> = OnceLock::new();
@@ -901,7 +910,7 @@ impl<M: Measurement> Criterion<M> {
                 .num_args(0))
             .after_help("
 This executable is a Criterion.rs benchmark.
-See https://github.com/bheisler/criterion.rs for more details.
+See https://github.com/criterion-rs/criterion.rs for more details.
 
 To enable debug output, define the environment variable CRITERION_DEBUG.
 Criterion.rs will output more debug information and will save the gnuplot
@@ -910,7 +919,7 @@ scripts alongside the generated plots.
 To test that the benchmarks work, run `cargo test --benches`
 
 NOTE: If you see an 'unrecognized option' error using any of the options above, see:
-https://bheisler.github.io/criterion.rs/book/faq.html
+https://criterion-rs.github.io/book/faq.html
 ")
             .get_matches();
 

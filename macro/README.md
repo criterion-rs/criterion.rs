@@ -28,5 +28,5 @@ for inclusion in this crate by you, as defined in the Apache-2.0 license, shall
 be dual licensed as above, without any additional terms or conditions.
 
 [Code of Conduct]: https://www.rust-lang.org/en-US/conduct.html
-[Criterion.rs]: https://github.com/bheisler/criterion.rs
+[Criterion.rs]: https://github.com/criterion-rs/criterion.rs
 [contributing instructions]: CONTRIBUTING.md
