@@ -6,7 +6,7 @@ The easiest way to contribute to Criterion.<span></span>rs is to use it and repo
 
 Issues, ideas, requests and questions should be posted on the issue tracker at:
 
-https://github.com/bheisler/criterion.rs/issues
+https://github.com/criterion-rs/criterion.rs/issues
 
 ## A Note on Dependency Updates
 
@@ -18,7 +18,7 @@ new release.
 
 Pull requests are welcome, though please raise an issue for discussion first if none exists. We're happy to assist new contributors.
 
-If you're not sure what to work on, try checking the [Beginner label](https://github.com/bheisler/criterion.rs/issues?q=is%3Aissue+is%3Aopen+label%3ABeginner)
+If you're not sure what to work on, try checking the [Beginner label](https://github.com/criterion-rs/criterion.rs/issues?q=is%3Aissue+is%3Aopen+label%3ABeginner)
 
 To make changes to the code, fork the repo and clone it:
 
@@ -47,7 +47,7 @@ rustup component add rustfmt-preview
 cargo fmt --all
 ```
 
-Don't forget to update the CHANGELOG.md file and any appropriate documentation. Once you're finished, push to your fork and submit a pull request. We try to respond to new issues and pull requests quickly, so if there hasn't been any response for more than a few days feel free to ping @bheisler.
+Don't forget to update the CHANGELOG.md file and any appropriate documentation. Once you're finished, push to your fork and submit a pull request. We try to respond to new issues and pull requests quickly, so if there hasn't been any response for more than a few days feel free to ping @berkus or @lemmih.
 
 Some things that will increase the chance that your pull request is accepted:
 
@@ -62,11 +62,11 @@ Some things that will increase the chance that your pull request is accepted:
 
 If you're not sure which branch to use just start with master, as this can be changed during review.
 
-When it is time to release the unreleased branch, a PR is made from the unreleased branch to master. e.g. https://github.com/bheisler/criterion.rs/pull/496
+When it is time to release the unreleased branch, a PR is made from the unreleased branch to master. e.g. https://github.com/criterion-rs/criterion.rs/pull/496
 
 ## Github Labels
 
-Criterion.<span></span>rs uses a simple set of labels to track issues. Most important are the 
+Criterion.<span></span>rs uses a simple set of labels to track issues. Most important are the
 difficulty labels:
 
 * Beginner - Suitable for people new to Criterion.rs, or even new to Rust in general

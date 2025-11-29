@@ -216,15 +216,15 @@ mode when `--bench` is not present, or when `--bench` and `--test` are both pres
 
 ### My benchmark fails to compile with the error "use of undeclared type or module `<my_crate>`
 
-First, check the [Getting Started](https://bheisler.github.io/criterion.rs/book/getting_started.html) 
+First, check the [Getting Started](https://criterion-rs.github.io/book/getting_started.html)
 guide and ensure that the `[[bench]]` section of your Cargo.toml is set up correctly. If it's
 correct, read on.
 
 This can be caused by two different things.
 
 Most commonly, this problem happens when trying to benchmark a binary (as opposed to library) crate.
-Criterion.rs cannot be used to benchmark binary crates (see the 
-[Known Limitations](https://bheisler.github.io/criterion.rs/book/user_guide/known_limitations.html)
+Criterion.rs cannot be used to benchmark binary crates (see the
+[Known Limitations](https://criterion-rs.github.io/book/user_guide/known_limitations.html)
 page for more details on why). The usual workaround is to structure your application as a library
 crate that implements most of the functionality of the application and a binary crate which acts
 as a thin wrapper around the library crate to provide things like a CLI. Then, you can create
@@ -250,10 +250,10 @@ if it were to measure each execution individually, Criterion.rs might see a sequ
 like "0ms, 0ms, 0ms, 0ms, 0ms, 5ms, 0ms..." for a function that takes 1ms. To mitigate this,
 Criterion.rs runs many iterations of your benchmark, to divide that jitter across each iteration.
 There would be no way to run such a timing loop on _part_ of your code, unless that part were
-already easy to factor out and put in a separate function anyway. Instead, you'd have to 
+already easy to factor out and put in a separate function anyway. Instead, you'd have to
 time each iteration individually, resulting in the maximum possible timing jitter.
 
-However, if you need to do this anyway, and you're OK with the reduced accuracy, you can use 
-`Bencher::iter_custom` to measure your code however you want to. `iter_custom` exists to allow for 
-complex cases like multi-threaded code or, yes, measuring part of a function. Just be aware that 
+However, if you need to do this anyway, and you're OK with the reduced accuracy, you can use
+`Bencher::iter_custom` to measure your code however you want to. `iter_custom` exists to allow for
+complex cases like multi-threaded code or, yes, measuring part of a function. Just be aware that
 you're responsible for the accuracy of your measurements.

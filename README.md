@@ -3,9 +3,9 @@
 <div align="center">Statistics-driven Microbenchmarking in Rust</div>
 
 <div align="center">
- <a href="https://bheisler.github.io/criterion.rs/book/getting_started.html">Getting Started</a>
+ <a href="https://criterion-rs.github.io/book/getting_started.html">Getting Started</a>
     |
-    <a href="https://bheisler.github.io/criterion.rs/book/index.html">User Guide</a>
+    <a href="https://criterion-rs.github.io/book/index.html">User Guide</a>
     |
     <a href="https://bheisler.github.io/criterion.rs/criterion/">Master API Docs</a>
     |
@@ -88,7 +88,7 @@ Found 11 outliers among 99 measurements (11.11%)
   5 (5.05%) high severe
 ```
 
-See the [Getting Started](https://bheisler.github.io/criterion.rs/book/getting_started.html) guide for more details.
+See the [Getting Started](https://criterion-rs.github.io/book/getting_started.html) guide for more details.
 
 ### Goals
 

@@ -18,7 +18,7 @@ Here's an overview of the important differences:
 - **Con:** Because Iai runs the benchmark exactly once, it cannot measure variation in the performance such as might be caused by OS thread scheduling or hash-table randomization.
 - **Limitation:** Iai can only be used on platforms supported by Valgrind. Notably, this does not include Windows.
 
-For benchmarks that run in CI (especially if you're checking for performance regressions in pull 
+For benchmarks that run in CI (especially if you're checking for performance regressions in pull
 requests on cloud CI) you should use Iai. For benchmarking on Windows or other platforms that
 Valgrind doesn't support, you should use Criterion-rs. For other cases, I would advise using both.
 Iai gives more precision and scales better to larger benchmarks, while Criterion-rs allows for
@@ -26,4 +26,4 @@ excluding setup time and gives you more information about the actual time your c
 strongly that is affected by non-determinism like threading or hash-table randomization. If you
 absolutely need to pick one or the other though, Iai is probably the one to go with.
 
-[Cargo-criterion]: https://github.com/bheisler/cargo-criterion
+[Cargo-criterion]: https://github.com/criterion-rs/cargo-criterion

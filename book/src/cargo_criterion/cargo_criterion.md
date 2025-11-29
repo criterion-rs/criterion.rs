@@ -15,4 +15,4 @@ Once installed, you can run your benchmarks with:
 
 `cargo criterion`
 
-If you encounter any issues or have any suggestions for future features, please raise an issue at [the GitHub repository](https://github.com/bheisler/cargo-criterion).
+If you encounter any issues or have any suggestions for future features, please raise an issue at [the GitHub repository](https://github.com/criterion-rs/cargo-criterion).
