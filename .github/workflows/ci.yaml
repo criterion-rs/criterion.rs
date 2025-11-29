@@ -9,7 +9,7 @@ on:
 name: tests
 env:
   CARGO_TERM_COLOR: always
-  MSRV: 1.81.0
+  MSRV: 1.86.0
 
 jobs:
   ci:
@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         rust:
-          - 1.87.0 # Stable release as of 2025-05-17
+          - 1.91.1 # Stable release as of 2025-11-10
           - $MSRV # MSRV
 
     steps:
