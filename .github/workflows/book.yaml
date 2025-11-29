@@ -35,6 +35,7 @@ jobs:
         uses: jontze/action-mdbook@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          mdbook-version: "~0.4.52" # mdbook 0.5 is not compatible with linkcheck and requires linkcheck2, see https://github.com/jontze/action-mdbook/issues/671
           use-linkcheck: true
           use-mermaid: true
           use-toc: true
