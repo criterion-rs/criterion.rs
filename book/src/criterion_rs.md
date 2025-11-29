@@ -8,7 +8,7 @@ Criterion.rs is free and open source. You can find the source on [GitHub](https:
 
 ## API Docs ##
 
-In addition to this book, you may also wish to read [the API documentation](http://bheisler.github.io/criterion.rs/criterion/).
+In addition to this book, you may also wish to read [the API documentation](http://criterion-rs.github.io/criterion/FIXME).
 
 ## License ##
 

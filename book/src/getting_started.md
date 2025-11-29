@@ -85,7 +85,7 @@ use mycrate::fibonacci;
 ```
 
 First, we declare the criterion crate and import the [Criterion
-type](http://bheisler.github.io/criterion.rs/criterion/struct.Criterion.html). Criterion is the
+type](http://criterion-rs.github.io/criterion/struct.Criterion.html.FIXME). Criterion is the
 main type for the Criterion.rs library. It provides methods to configure and define groups of
 benchmarks. We also import `black_box`, which will be described later.
 
@@ -109,7 +109,7 @@ but it should be clear and understandable.
 This is where the real work happens. The `bench_function` method defines a benchmark with a name
 and a closure. The name should be unique among all of the benchmarks for your project. The closure
 must accept one argument, a
-[Bencher](http://bheisler.github.io/criterion.rs/criterion/struct.Bencher.html). The bencher
+[Bencher](http://criterion-rs.github.io/criterion/struct.Bencher.html.FIXME). The bencher
 performs the benchmark - in this case, it simply calls our `fibonacci` function in a loop. There
 are a number of other ways to perform benchmarks, including the option to benchmark with arguments,
 and to compare the performance of two functions. See the API documentation for details on all of
@@ -126,10 +126,10 @@ criterion_main!(benches);
 ```
 
 Here we invoke the `criterion_group!`
-[(link)](http://bheisler.github.io/criterion.rs/criterion/macro.criterion_group.html) macro to
+[(link)](http://criterion-rs.github.io/criterion/macro.criterion_group.html.FIXME) macro to
 generate a benchmark group called benches, containing the `criterion_benchmark` function defined
 earlier. Finally, we invoke the `criterion_main!`
-[(link)](http://bheisler.github.io/criterion.rs/criterion/macro.criterion_main.html) macro to
+[(link)](http://criterion-rs.github.io/criterion/macro.criterion_main.html.FIXME) macro to
 generate a main function which executes the `benches` group. See the API documentation for more
 information on these macros.
 
