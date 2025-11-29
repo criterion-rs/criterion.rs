@@ -13,7 +13,7 @@ authors = [
 version = "0.7.0"
 edition = "2021"
 # Update the MSRV variable in .github/workflows/ci.yml when changing this.
-rust-version = "1.81"
+rust-version = "1.86"
 license = "Apache-2.0 OR MIT"
 repository = "https://github.com/criterion-rs/criterion.rs"
 readme = "README.md"
