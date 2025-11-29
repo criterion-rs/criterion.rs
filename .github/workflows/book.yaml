@@ -1,62 +1,87 @@
+name: Build book and publish to GHCR
+
 on:
   push:
     branches:
       - master
     paths:
-      - 'book/**'
+      - "book/**"
       - ".github/workflows/book.yaml"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  packages: write # push to GHCR
 
 # Allow one concurrent deployment
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: true
 
-name: book
 env:
   CARGO_TERM_COLOR: always
-
+  REF_MUTABLE: ghcr.io/criterion-rs/criterion.rs-book:latest
+  REF_IMMUTABLE: ghcr.io/criterion-rs/criterion.rs-book:${{ github.sha }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install mdBook
+        uses: jontze/action-mdbook@v3
         with:
-          fetch-depth: 0
-      - name: Install latest mdbook
-        run: |
-          tag=$(curl 'https://api.github.com/repos/rust-lang/mdbook/releases/latest' | jq -r '.tag_name')
-          url="https://github.com/rust-lang/mdbook/releases/download/${tag}/mdbook-${tag}-x86_64-unknown-linux-gnu.tar.gz"
-          mkdir mdbook
-          curl -sSL $url | tar -xz --directory=./mdbook
-          echo `pwd`/mdbook >> $GITHUB_PATH
-      - name: Install latest linkcheck
-        # Adapted from https://github.com/Michael-F-Bryan/mdbook-linkcheck README
-        run: |
-          mkdir -p mdbook-linkcheck && \
-          curl -L https://github.com/Michael-F-Bryan/mdbook-linkcheck/releases/latest/download/mdbook-linkcheck.x86_64-unknown-linux-gnu.zip -o mdbook-linkcheck/mdbook-linkcheck.zip && \
-          unzip -d ./mdbook-linkcheck mdbook-linkcheck/mdbook-linkcheck.zip && \
-          chmod +x mdbook-linkcheck/mdbook-linkcheck && \
-          echo `pwd`/mdbook-linkcheck >> $GITHUB_PATH
+          token: ${{ secrets.GITHUB_TOKEN }}
+          use-linkcheck: true
+          use-mermaid: true
+          use-toc: true
+          use-opengh: true
+          use-admonish: true
+          use-katex: true
       - name: Build Book
         run: |
+          set -euo pipefail
           cd book && mdbook build
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Create tarball
+        run: |
+          set -euo pipefail
+          tar -czf book.tar.gz -C book/book/html .
+      - name: Setup ORAS
+        uses: oras-project/setup-oras@v1
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | oras login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Push tarball as OCI artifact (mutable latest)
+        run: |
+          set -euo pipefail
+          oras push "${REF_MUTABLE}" \
+            book.tar.gz:application/gzip \
+            --annotation org.opencontainers.image.title="book.tar.gz" \
+            --annotation org.opencontainers.image.source="${{ github.repository }}" \
+            --annotation org.opencontainers.image.revision="${{ github.sha }}"
+      - name: Copy to immutable SHA tag
+        run: |
+          set -euo pipefail
+          oras copy "${REF_MUTABLE}" "${REF_IMMUTABLE}"
+      - name: Make GHCR package public
+        # This uses gh CLI to set visibility; repo must allow Actions to create a public package.
+        # Package name matches ghcr repo path without registry and tag
+        # criterion.rs-book is the package under org criterion-rs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh api \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /orgs/criterion-rs/packages/container/criterion.rs-book/visibility \
+            -f visibility=public
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v4
         with:
-          # Upload entire repository
-          path: 'book/book/html'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          repository: criterion-rs/criterion-rs.github.io
+          event-type: publish-book
