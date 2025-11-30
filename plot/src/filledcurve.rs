@@ -40,7 +40,7 @@ impl Script for Properties {
             script.push_str(&format!("solid {} ", opacity))
         }
 
-        // TODO border shoulde be configurable
+        // TODO border should be configurable
         script.push_str("noborder ");
 
         if let Some(color) = self.color {
