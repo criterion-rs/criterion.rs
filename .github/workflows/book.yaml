@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Install mdBook
-        uses: jontze/action-mdbook@v3
+        uses: jontze/action-mdbook@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           mdbook-version: "~0.4.52" # mdbook 0.5 is not compatible with linkcheck and requires linkcheck2, see https://github.com/jontze/action-mdbook/issues/671
