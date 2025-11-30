@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.8.1](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.0...criterion-v0.8.1) - 2025-11-30
+
+### Other
+
+- *(deps)* bump jontze/action-mdbook from 3 to 4
+- *(deps)* bump actions/checkout from 4 to 6
+
 ## [0.8.0](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.7.0...criterion-v0.8.0) - 2025-11-29
 
 ### BREAKING
