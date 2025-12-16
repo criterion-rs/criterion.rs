@@ -17,6 +17,7 @@ rust-version = "1.86"
 license = "Apache-2.0 OR MIT"
 repository = "https://github.com/criterion-rs/criterion.rs"
 readme = "README.md"
+include = ["Cargo.toml", "CHANGELOG.md", "README.md", "LICENSE-MIT", "LICENSE-APACHE", "src/**/*.rs"]
 
 [package]
 name = "criterion"
