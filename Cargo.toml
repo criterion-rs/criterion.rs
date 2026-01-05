@@ -34,7 +34,6 @@ version.workspace = true
 exclude = ["book/*"]
 
 [dependencies]
-alloca = "0.4"
 anes = "0.1.4"
 criterion-plot = { path = "plot", version = "0.8.1" }
 itertools = "0.13"
@@ -60,6 +59,9 @@ smol = { version = "2.0", default-features = false, optional = true }
 tokio = { version = "1.0", default-features = false, features = [
     "rt",
 ], optional = true }
+
+[target.'cfg(any(windows, unix))'.dependencies]
+alloca = "0.4"
 
 [dependencies.plotters]
 version = "^0.3.2"
