@@ -79,12 +79,29 @@ impl Bandwidth {
     fn estimate<A: Float>(self, sample: &Sample<A>) -> A {
         match self {
             Bandwidth::Silverman => {
-                let factor = A::cast(4. / 3.);
-                let exponent = A::cast(1. / 5.);
-                let n = A::cast(sample.len());
-                let sigma = sample.std_dev(None);
+                let zero = A::cast(0.0);
+                let range = sample.max() - sample.min();
 
-                sigma * (factor / n).powf(exponent)
+                // When std_dev is zero (all values identical), bandwidth calculation
+                // would produce zero, leading to division by zero in KDE sweep.
+                // Use a small fallback bandwidth relative to the data range.
+                if range == zero {
+                    // All values are identical. Use 1% of the value magnitude, or a
+                    // minimal epsilon if the value is also zero.
+                    let val = sample.mean();
+                    if val.abs() > zero {
+                        val.abs() * A::cast(0.01)
+                    } else {
+                        A::cast(1e-10) // Minimal epsilon for zero values
+                    }
+                } else {
+                    // Non-constant data: use Silverman's rule of thumb
+                    let sigma = sample.std_dev(None);
+                    let factor = A::cast(4. / 3.);
+                    let exponent = A::cast(1. / 5.);
+                    let n = A::cast(sample.len());
+                    sigma * (factor / n).powf(exponent)
+                }
             }
         }
     }

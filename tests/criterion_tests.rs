@@ -465,6 +465,18 @@ fn test_criterion_doesnt_panic_if_measured_time_is_zero() {
     });
 }
 
+#[test]
+fn test_criterion_doesnt_panic_with_uniform_durations() {
+    // Reproduces issue #873: iter_custom returning uniform durations
+    // (iters milliseconds) causes panic during chart generation due to
+    // zero variance leading to zero bandwidth in KDE calculation.
+    let dir = temp_dir();
+    let mut c = short_benchmark(&dir);
+    c.bench_function("uniform_durations", |bencher| {
+        bencher.iter_custom(|iters| Duration::from_millis(iters));
+    });
+}
+
 mod macros {
     use super::{criterion_group, criterion_main, Criterion};
 
