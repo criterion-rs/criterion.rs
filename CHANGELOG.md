@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.8.2](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.1...criterion-v0.8.2) - 2026-02-04
+
+### Fixed
+
+- don't build alloca on unsupported targets
+
+### Other
+
+- *(deps)* bump crate-ci/typos from 1.40.0 to 1.43.0
+- Fix panic with uniform iteration durations in benchmarks
+- Update Readme
+- Exclude development scripts from published package
+
 ## [0.8.1](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.0...criterion-v0.8.1) - 2025-12-07
 
 ### Fixed

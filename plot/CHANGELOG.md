@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2](https://github.com/criterion-rs/criterion.rs/compare/criterion-plot-v0.8.1...criterion-plot-v0.8.2) - 2026-02-04
+
+### Other
+
+- Update Readme
+
 ## [0.8.1](https://github.com/criterion-rs/criterion.rs/compare/criterion-plot-v0.8.0...criterion-plot-v0.8.1) - 2025-12-07
 
 ### Fixed
