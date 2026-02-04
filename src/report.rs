@@ -744,18 +744,17 @@ pub struct BencherReport;
 impl Report for BencherReport {
     fn measurement_start(
         &self,
-        id: &BenchmarkId,
+        _id: &BenchmarkId,
         _context: &ReportContext,
         _sample_count: u64,
         _estimate_ns: f64,
         _iter_count: u64,
     ) {
-        print!("test {} ... ", id);
     }
 
     fn measurement_complete(
         &self,
-        _id: &BenchmarkId,
+        id: &BenchmarkId,
         _: &ReportContext,
         meas: &MeasurementData<'_>,
         formatter: &dyn ValueFormatter,
@@ -767,7 +766,7 @@ impl Report for BencherReport {
         let unit = formatter.scale_for_machines(&mut values);
 
         println!(
-            "bench: {:>11} {}/iter (+/- {})",
+            "test {id} ... bench: {:>11} {}/iter (+/- {})",
             format::integer(values[0]),
             unit,
             format::integer(values[1])
