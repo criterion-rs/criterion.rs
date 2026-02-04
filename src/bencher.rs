@@ -44,7 +44,7 @@ pub struct Bencher<'a, M: Measurement = WallTime> {
     pub(crate) measurement: &'a M,     // Reference to the measurement object
     pub(crate) elapsed_time: Duration, // How much time did it take to perform the iteration? Used for the warmup period.
 }
-impl<'a, M: Measurement> Bencher<'a, M> {
+impl<M: Measurement> Bencher<'_, M> {
     /// Times a `routine` by executing it many times and timing the total elapsed time.
     ///
     /// Prefer this timing loop when `routine` returns a value that doesn't have a destructor.

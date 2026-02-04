@@ -82,7 +82,7 @@ pub struct BenchmarkGroup<'a, M: Measurement> {
     partial_config: PartialBenchmarkConfig,
     throughput: Option<Throughput>,
 }
-impl<'a, M: Measurement> BenchmarkGroup<'a, M> {
+impl<M: Measurement> BenchmarkGroup<'_, M> {
     /// Changes the size of the sample for this benchmark
     ///
     /// A bigger sample should yield more accurate results if paired with a sufficiently large
@@ -365,7 +365,7 @@ impl<'a, M: Measurement> BenchmarkGroup<'a, M> {
         ::std::mem::drop(self);
     }
 }
-impl<'a, M: Measurement> Drop for BenchmarkGroup<'a, M> {
+impl<M: Measurement> Drop for BenchmarkGroup<'_, M> {
     fn drop(&mut self) {
         // I don't really like having a bunch of non-trivial code in drop, but this is the only way
         // to really write linear types like this in Rust...

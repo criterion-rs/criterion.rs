@@ -592,8 +592,8 @@ impl Configure<Key> for Figure {
     where
         F: FnOnce(&mut key::Properties) -> &mut key::Properties,
     {
-        if self.key.is_some() {
-            configure(self.key.as_mut().unwrap());
+        if let Some(key) = &mut self.key {
+            configure(key);
         } else {
             let mut key = Default::default();
             configure(&mut key);

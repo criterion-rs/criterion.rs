@@ -110,7 +110,7 @@ where
     }
 }
 
-impl<'a, A> Deref for LabeledSample<'a, A>
+impl<A> Deref for LabeledSample<'_, A>
 where
     A: Float,
 {
@@ -122,7 +122,7 @@ where
 }
 
 // FIXME Use the `IndexGet` trait
-impl<'a, A> Index<usize> for LabeledSample<'a, A>
+impl<A> Index<usize> for LabeledSample<'_, A>
 where
     A: Float,
 {
@@ -174,7 +174,7 @@ where
     iter: slice::Iter<'a, A>,
 }
 
-impl<'a, A> Iterator for Iter<'a, A>
+impl<A> Iterator for Iter<'_, A>
 where
     A: Float,
 {
