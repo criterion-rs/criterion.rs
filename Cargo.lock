@@ -282,7 +282,7 @@ dependencies = [
 
 [[package]]
 name = "criterion"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "alloca",
  "anes",
@@ -313,7 +313,7 @@ dependencies = [
 
 [[package]]
 name = "criterion-plot"
-version = "0.8.1"
+version = "0.8.2"
 dependencies = [
  "cast",
  "itertools",
