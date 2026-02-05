@@ -10,7 +10,7 @@ authors = [
 # When bumping:
 #
 # * Update version numbers in the book;
-version = "0.8.2"
+version = "0.8.3"
 edition = "2021"
 # Update the MSRV variable in .github/workflows/ci.yml when changing this.
 rust-version = "1.86"
@@ -36,7 +36,7 @@ exclude = ["book/*"]
 
 [dependencies]
 anes = "0.1.4"
-criterion-plot = { path = "plot", version = "0.8.2" }
+criterion-plot = { path = "plot", version = "0.8.3" }
 itertools = "0.13"
 page_size = "0.6"
 serde = { version = "1.0.100", features = ["derive"] }
