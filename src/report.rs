@@ -44,7 +44,7 @@ pub(crate) struct MeasurementData<'a> {
     pub comparison: Option<ComparisonData>,
     pub throughput: Option<Throughput>,
 }
-impl<'a> MeasurementData<'a> {
+impl MeasurementData<'_> {
     pub fn iter_counts(&self) -> &Sample<f64> {
         self.data.x()
     }
@@ -807,7 +807,7 @@ fn measurement_throughputs(mes: &MeasurementData<'_>) -> Vec<Throughput> {
             }
             _ => vec![t.clone()],
         })
-        .unwrap_or(vec![])
+        .unwrap_or_default()
 }
 
 #[cfg(test)]

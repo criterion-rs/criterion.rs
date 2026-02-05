@@ -188,6 +188,7 @@ pub fn black_box<T>(dummy: T) -> T {
 /// it will be difficult to take accurate measurements. In this situation, the best option is to use
 /// [`Bencher::iter`] which has next-to-zero measurement overhead.
 #[derive(Debug, Eq, PartialEq, Copy, Hash, Clone)]
+#[non_exhaustive]
 pub enum BatchSize {
     /// `SmallInput` indicates that the input to the benchmark routine (the value returned from
     /// the setup routine) is small enough that millions of values can be safely held in memory.
@@ -228,9 +229,6 @@ pub enum BatchSize {
     /// will be larger than that of `NumBatches`. Most benchmarks should use `SmallInput` or
     /// `LargeInput` instead.
     NumIterations(u64),
-
-    #[doc(hidden)]
-    __NonExhaustive,
 }
 impl BatchSize {
     /// Convert to a number of iterations per batch.
@@ -241,12 +239,11 @@ impl BatchSize {
     /// measurement overhead from the benchmark time.
     fn iters_per_batch(self, iters: u64) -> u64 {
         match self {
-            BatchSize::SmallInput => (iters + 10 - 1) / 10,
-            BatchSize::LargeInput => (iters + 1000 - 1) / 1000,
+            BatchSize::SmallInput => iters.div_ceil(10),
+            BatchSize::LargeInput => iters.div_ceil(1000),
             BatchSize::PerIteration => 1,
-            BatchSize::NumBatches(batches) => (iters + batches - 1) / batches,
+            BatchSize::NumBatches(batches) => iters.div_ceil(batches),
             BatchSize::NumIterations(size) => size,
-            BatchSize::__NonExhaustive => panic!("__NonExhaustive is not a valid BatchSize."),
         }
     }
 }
@@ -1295,7 +1292,7 @@ pub enum Throughput {
     /// the entire collection in one iteration. This will make sure the report simultaneously
     /// includes on the rows/s and MB/s that data processing is able to achieve.
     /// The elements are considered the "primary" throughput being reported on (i.e. what will appear
-    /// in the BenchmarkId).
+    /// in the `BenchmarkId`).
     ElementsAndBytes {
         /// The value should be the number of elements processed by one iteration of the benchmarked code.
         /// Typically, this would be the size of a collection, but could also be the number of lines of

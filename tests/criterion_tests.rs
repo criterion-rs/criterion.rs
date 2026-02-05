@@ -473,7 +473,7 @@ fn test_criterion_doesnt_panic_with_uniform_durations() {
     let dir = temp_dir();
     let mut c = short_benchmark(&dir);
     c.bench_function("uniform_durations", |bencher| {
-        bencher.iter_custom(|iters| Duration::from_millis(iters));
+        bencher.iter_custom(Duration::from_millis);
     });
 }
 

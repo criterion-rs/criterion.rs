@@ -9,7 +9,7 @@ fn from_elem(c: &mut Criterion) {
     for size in [KB, 2 * KB, 4 * KB, 8 * KB, 16 * KB].iter() {
         group.throughput(Throughput::Bytes(*size as u64));
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, &size| {
-            b.iter(|| iter::repeat(0u8).take(size).collect::<Vec<_>>());
+            b.iter(|| iter::repeat_n(0u8, size).collect::<Vec<_>>());
         });
     }
     group.finish();
@@ -18,7 +18,7 @@ fn from_elem(c: &mut Criterion) {
     for size in [KB, 2 * KB].iter() {
         group.throughput(Throughput::BytesDecimal(*size as u64));
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, &size| {
-            b.iter(|| iter::repeat(0u8).take(size).collect::<Vec<_>>());
+            b.iter(|| iter::repeat_n(0u8, size).collect::<Vec<_>>());
         });
     }
     group.finish();
@@ -30,7 +30,7 @@ fn from_elem(c: &mut Criterion) {
             bytes: 2 * *size as u64,
         });
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, &size| {
-            b.iter(|| iter::repeat(0u16).take(size).collect::<Vec<_>>());
+            b.iter(|| iter::repeat_n(0u16, size).collect::<Vec<_>>());
         });
     }
     group.finish();
