@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.8.3](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.2...criterion-v0.8.3) - 2026-02-05
+
+### Fixed
+
+- include bench names in quick bencher report
+
 ## [0.8.2](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.1...criterion-v0.8.2) - 2026-02-04
 
 ### Fixed
