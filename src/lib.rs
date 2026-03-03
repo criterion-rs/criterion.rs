@@ -355,7 +355,7 @@ pub struct Criterion<M: Measurement = WallTime> {
     config: BenchmarkConfig,
     filter: BenchmarkFilter,
     report: Reports,
-    output_directory: PathBuf,
+    output_directory: Option<PathBuf>,
     baseline_directory: String,
     baseline: Baseline,
     load_baseline: Option<String>,
@@ -426,7 +426,7 @@ impl Default for Criterion {
             baseline_directory: "base".to_owned(),
             baseline: Baseline::Save,
             load_baseline: None,
-            output_directory: default_output_directory().clone(),
+            output_directory: None,
             all_directories: HashSet::new(),
             all_titles: HashSet::new(),
             measurement: WallTime,
@@ -720,7 +720,7 @@ impl<M: Measurement> Criterion<M> {
     #[must_use]
     #[doc(hidden)]
     pub fn output_directory(mut self, path: &Path) -> Criterion<M> {
-        path.clone_into(&mut self.output_directory);
+        self.output_directory = Some(path.to_owned());
 
         self
     }
@@ -737,6 +737,18 @@ impl<M: Measurement> Criterion<M> {
         self
     }
 
+    /// Obtain the output directory by using either the explicit override or the
+    /// default output directory.
+    ///
+    /// This is only called in benchmark and profile modes. Other modes avoid
+    /// initializing the default output directory since that is potentially
+    /// expensive (involves a `cargo metadata` call).
+    pub(crate) fn resolve_output_directory(&self) -> PathBuf {
+        self.output_directory
+            .clone()
+            .unwrap_or_else(|| default_output_directory().clone())
+    }
+
     /// Generate the final summary at the end of a run.
     #[doc(hidden)]
     pub fn final_summary(&self) {
@@ -745,7 +757,7 @@ impl<M: Measurement> Criterion<M> {
         }
 
         let report_context = ReportContext {
-            output_directory: self.output_directory.clone(),
+            output_directory: self.resolve_output_directory(),
             plot_config: PlotConfiguration::default(),
         };
 
