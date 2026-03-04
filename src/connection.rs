@@ -309,12 +309,14 @@ impl From<&InternalBenchmarkId> for RawBenchmarkId {
 pub enum AxisScale {
     Linear,
     Logarithmic,
+    Log2,
 }
 impl From<crate::AxisScale> for AxisScale {
     fn from(other: crate::AxisScale) -> Self {
         match other {
             crate::AxisScale::Linear => AxisScale::Linear,
             crate::AxisScale::Logarithmic => AxisScale::Logarithmic,
+            crate::AxisScale::Log2 => AxisScale::Log2,
         }
     }
 }
