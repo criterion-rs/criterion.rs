@@ -14,7 +14,7 @@ pub struct Properties {
     grids: map::grid::Map<grid::Properties>,
     hidden: bool,
     label: Option<Cow<'static, str>>,
-    logarithmic: bool,
+    scale: Scale,
     range: Option<(f64, f64)>,
     scale_factor: f64,
     tics: Option<String>,
@@ -26,7 +26,7 @@ impl Default for Properties {
             grids: map::grid::Map::new(),
             hidden: false,
             label: None,
-            logarithmic: false,
+            scale: Scale::Linear,
             range: None,
             scale_factor: 1.,
             tics: None,
@@ -103,10 +103,7 @@ impl Set<Scale> for Properties {
     fn set(&mut self, scale: Scale) -> &mut Properties {
         self.hidden = false;
 
-        match scale {
-            Scale::Linear => self.logarithmic = false,
-            Scale::Logarithmic => self.logarithmic = true,
-        }
+        self.scale = scale;
 
         self
     }
@@ -178,8 +175,8 @@ impl Script for (Axis, &Properties) {
             script.push_str(&format!("set {}range [{}:{}]\n", axis_, low, high))
         }
 
-        if properties.logarithmic {
-            script.push_str(&format!("set logscale {}\n", axis_));
+        if let Scale::Logarithmic(base) = properties.scale {
+            script.push_str(&format!("set logscale {} {}\n", axis_, base))
         }
 
         for (grid, properties) in properties.grids.iter() {
