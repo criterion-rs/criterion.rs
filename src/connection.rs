@@ -321,12 +321,16 @@ impl From<crate::AxisScale> for AxisScale {
 
 #[derive(Debug, Serialize)]
 pub struct PlotConfiguration {
-    summary_scale: AxisScale,
+    input_scale: AxisScale,
+    time_scale: AxisScale,
+    throughput_scale: AxisScale,
 }
 impl From<&crate::PlotConfiguration> for PlotConfiguration {
     fn from(other: &crate::PlotConfiguration) -> Self {
         PlotConfiguration {
-            summary_scale: other.summary_scale.into(),
+            input_scale: other.axis_scale.input.0.into(),
+            time_scale: other.axis_scale.time.0.into(),
+            throughput_scale: other.axis_scale.throughput.0.into(),
         }
     }
 }
