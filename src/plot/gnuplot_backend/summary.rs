@@ -9,7 +9,7 @@ use {
         plot::LinePlotConfig,
         report::{BenchmarkId, ValueType},
         stats::univariate::Sample,
-        AxisScale,
+        AxisScale, AxisScales,
     },
     criterion_plot::prelude::*,
     itertools::Itertools,
@@ -49,7 +49,7 @@ pub(crate) fn line_comparison(
     all_curves: &[&(&BenchmarkId, Vec<f64>)],
     path: &Path,
     value_type: ValueType,
-    axis_scale: AxisScale,
+    axis_scale: &AxisScales,
 ) -> Child {
     let path = PathBuf::from(path);
     let mut f = Figure::new();
@@ -71,7 +71,7 @@ pub(crate) fn line_comparison(
         .set(Title(format!("{}: Comparison", gnuplot_escape(title))))
         .configure(Axis::BottomX, |a| {
             a.set(Label(format!("Input{}", input_suffix)))
-                .set(axis_scale.to_gnuplot())
+                .set(axis_scale.input.0.to_gnuplot())
         });
 
     let mut i = 0;
@@ -88,11 +88,17 @@ pub(crate) fn line_comparison(
     let mut max_formatted = [max];
     let unit = (line_cfg.scale)(formatter, max_id, max, max_id, &mut max_formatted);
 
+    let y_axis_scale = match line_cfg.label {
+        "time" => axis_scale.time.0,
+        "throughput" => axis_scale.throughput.0,
+        _ => unimplemented!("unexpected line plot"),
+    };
+
     f.configure(Axis::LeftY, |a| {
         a.configure(Grid::Major, |g| g.show())
             .configure(Grid::Minor, |g| g.hide())
             .set(Label(format!("Average {} ({})", line_cfg.label, unit)))
-            .set(axis_scale.to_gnuplot())
+            .set(y_axis_scale.to_gnuplot())
     });
 
     // This assumes the curves are sorted. It also assumes that the benchmark IDs all have numeric
@@ -142,7 +148,7 @@ pub fn violin(
     title: &str,
     all_curves: &[&(&BenchmarkId, Vec<f64>)],
     path: &Path,
-    axis_scale: AxisScale,
+    axis_scale: &AxisScales,
 ) -> Child {
     let path = PathBuf::from(&path);
     let all_curves_vec = all_curves.iter().rev().cloned().collect::<Vec<_>>();
@@ -189,7 +195,7 @@ pub fn violin(
                 .configure(Grid::Minor, |g| g.hide())
                 .set(Range::Limits(0., max * one[0]))
                 .set(Label(format!("Average time ({})", unit)))
-                .set(axis_scale.to_gnuplot())
+                .set(axis_scale.time.0.to_gnuplot())
         })
         .configure(Axis::LeftY, |a| {
             a.set(Label("Input"))
