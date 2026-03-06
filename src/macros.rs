@@ -116,6 +116,8 @@ macro_rules! criterion_group {
 macro_rules! criterion_main {
     ( $( $group:path ),+ $(,)* ) => {
         fn main() {
+            $crate::deaslr::maybe_reenter_without_aslr();
+
             $(
                 $group();
             )+
