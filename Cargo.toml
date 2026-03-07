@@ -64,6 +64,9 @@ tokio = { version = "1.0", default-features = false, features = [
 [target.'cfg(any(windows, unix))'.dependencies]
 alloca = "0.4"
 
+[target.'cfg(unix)'.dependencies]
+nix = { version = "0.31.2", default-features = false, features = [], optional = true }
+
 [dependencies.plotters]
 version = "^0.3.2"
 optional = true
@@ -85,7 +88,7 @@ stable = [
     "async_smol",
     "async_tokio",
 ]
-default = ["rayon", "plotters", "cargo_bench_support"]
+default = ["rayon", "plotters", "cargo_bench_support", "deaslr"]
 
 # This is a legacy feature that no longer does anything, but removing it would be a semver break.
 real_blackbox = []
@@ -114,6 +117,10 @@ cargo_bench_support = []
 # Make Criterion.rs generate CSV files. This feature is deprecated in favor of
 # cargo-criterion's --message-format=json option.
 csv_output = ["dep:csv"]
+
+# Support disabling Address-Space-Layout Randomization at runtime,
+# thus eliminating some of exec-to-exec noise.
+deaslr = ["dep:nix", "nix/personality", "nix/process"]
 
 [[bench]]
 name = "bench_main"
