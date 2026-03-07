@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0](https://github.com/criterion-rs/criterion.rs/compare/criterion-plot-v0.8.2...criterion-plot-v0.9.0) - 2026-03-07
+
+### Other
+
+- update CI workflow ([#57](https://github.com/criterion-rs/criterion.rs/pull/57))
+- fix all `cargo clippy` suggestions
+
 ## [0.8.2](https://github.com/criterion-rs/criterion.rs/compare/criterion-plot-v0.8.1...criterion-plot-v0.8.2) - 2026-02-04
 
 ### Other
