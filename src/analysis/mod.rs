@@ -51,7 +51,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
         if !base_dir_exists(
             id,
             &criterion.baseline_directory,
-            &criterion.output_directory,
+            &report_context.output_directory,
         ) {
             panic!(
                 "Baseline '{base}' must exist before comparison is allowed; try --save-baseline {base}",
@@ -62,7 +62,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
 
     let (sampling_mode, iters, times);
     if let Some(baseline) = &criterion.load_baseline {
-        let mut sample_path = criterion.output_directory.clone();
+        let mut sample_path = report_context.output_directory.clone();
         sample_path.push(id.as_directory_name());
         sample_path.push(baseline);
         sample_path.push("sample.json");
@@ -130,7 +130,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
 
     if criterion.should_save_baseline() {
         log_if_err!({
-            let mut new_dir = criterion.output_directory.clone();
+            let mut new_dir = report_context.output_directory.clone();
             new_dir.push(id.as_directory_name());
             new_dir.push("new");
             fs::mkdirp(&new_dir)
@@ -141,7 +141,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
     let labeled_sample = tukey::classify(avg_times);
     if criterion.should_save_baseline() {
         log_if_err!({
-            let mut tukey_file = criterion.output_directory.to_owned();
+            let mut tukey_file = report_context.output_directory.clone();
             tukey_file.push(id.as_directory_name());
             tukey_file.push("new");
             tukey_file.push("tukey.json");
@@ -158,7 +158,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
 
     if criterion.should_save_baseline() {
         log_if_err!({
-            let mut sample_file = criterion.output_directory.clone();
+            let mut sample_file = report_context.output_directory.clone();
             sample_file.push(id.as_directory_name());
             sample_file.push("new");
             sample_file.push("sample.json");
@@ -172,7 +172,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
             )
         });
         log_if_err!({
-            let mut estimates_file = criterion.output_directory.clone();
+            let mut estimates_file = report_context.output_directory.clone();
             estimates_file.push(id.as_directory_name());
             estimates_file.push("new");
             estimates_file.push("estimates.json");
@@ -183,9 +183,15 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
     let compare_data = if base_dir_exists(
         id,
         &criterion.baseline_directory,
-        &criterion.output_directory,
+        &report_context.output_directory,
     ) {
-        let result = compare::common(id, avg_times, config, criterion);
+        let result = compare::common(
+            id,
+            avg_times,
+            config,
+            &report_context.output_directory,
+            &criterion.baseline_directory,
+        );
         match result {
             Ok((
                 t_value,
@@ -239,7 +245,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
 
     if criterion.should_save_baseline() {
         log_if_err!({
-            let mut benchmark_file = criterion.output_directory.clone();
+            let mut benchmark_file = report_context.output_directory.clone();
             benchmark_file.push(id.as_directory_name());
             benchmark_file.push("new");
             benchmark_file.push("benchmark.json");
@@ -252,7 +258,7 @@ pub(crate) fn common<M: Measurement, T: ?Sized>(
             copy_new_dir_to_base(
                 id.as_directory_name(),
                 &criterion.baseline_directory,
-                &criterion.output_directory,
+                &report_context.output_directory,
             );
         }
     }

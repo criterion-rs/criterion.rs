@@ -25,7 +25,7 @@ use std::time::Duration;
 ///     // Now we can perform benchmarks with this group
 ///     group.bench_function("Bench 1", |b| b.iter(|| 1 ));
 ///     group.bench_function("Bench 2", |b| b.iter(|| 2 ));
-///    
+///
 ///     // It's recommended to call group.finish() explicitly at the end, but if you don't it will
 ///     // be called automatically when the group is dropped.
 ///     group.finish();
@@ -45,13 +45,13 @@ use std::time::Duration;
 ///                 |b, (p_x, p_y)| b.iter(|| p_x * p_y));
 ///         }
 ///     }
-///    
+///
 ///     group.finish();
 /// }
 ///
 /// fn bench_throughput(c: &mut Criterion) {
 ///     let mut group = c.benchmark_group("Summation");
-///     
+///
 ///     for size in [1024, 2048, 4096].iter() {
 ///         // Generate input of an appropriate size...
 ///         let input = vec![1u64, *size];
@@ -275,11 +275,6 @@ impl<M: Measurement> BenchmarkGroup<'_, M> {
         I: ?Sized,
     {
         let config = self.partial_config.to_complete(&self.criterion.config);
-        let report_context = ReportContext {
-            output_directory: self.criterion.output_directory.clone(),
-            plot_config: self.partial_config.plot_config.clone(),
-        };
-
         let mut id = InternalBenchmarkId::new(
             self.group_name.clone(),
             id.function_name,
@@ -316,6 +311,10 @@ impl<M: Measurement> BenchmarkGroup<'_, M> {
                     }
                 }
                 if do_run {
+                    let report_context = ReportContext {
+                        output_directory: self.criterion.resolve_output_directory(),
+                        plot_config: self.partial_config.plot_config.clone(),
+                    };
                     analysis::common(
                         &id,
                         &mut func,
@@ -335,13 +334,17 @@ impl<M: Measurement> BenchmarkGroup<'_, M> {
             Mode::Test => {
                 if do_run {
                     // In test mode, run the benchmark exactly once, then exit.
-                    self.criterion.report.test_start(&id, &report_context);
+                    self.criterion.report.test_start(&id);
                     func.test(&self.criterion.measurement, input);
-                    self.criterion.report.test_pass(&id, &report_context);
+                    self.criterion.report.test_pass(&id);
                 }
             }
             &Mode::Profile(duration) => {
                 if do_run {
+                    let report_context = ReportContext {
+                        output_directory: self.criterion.resolve_output_directory(),
+                        plot_config: self.partial_config.plot_config.clone(),
+                    };
                     func.profile(
                         &self.criterion.measurement,
                         &id,
@@ -381,7 +384,7 @@ impl<M: Measurement> Drop for BenchmarkGroup<'_, M> {
 
         if self.all_ids.len() > 1 && self.any_matched && self.criterion.mode.is_benchmark() {
             let report_context = ReportContext {
-                output_directory: self.criterion.output_directory.clone(),
+                output_directory: self.criterion.resolve_output_directory(),
                 plot_config: self.partial_config.plot_config.clone(),
             };
 

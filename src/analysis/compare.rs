@@ -7,17 +7,19 @@ use crate::error::Result;
 use crate::estimate::{
     build_change_estimates, ChangeDistributions, ChangeEstimates, ChangePointEstimates, Estimates,
 };
-use crate::measurement::Measurement;
 use crate::report::BenchmarkId;
-use crate::{fs, Criterion, SavedSample};
+use crate::{fs, SavedSample};
+
+use std::path::Path;
 
 // Common comparison procedure
 #[allow(clippy::type_complexity)]
-pub(crate) fn common<M: Measurement>(
+pub(crate) fn common(
     id: &BenchmarkId,
     avg_times: &Sample<f64>,
     config: &BenchmarkConfig,
-    criterion: &Criterion<M>,
+    output_directory: &Path,
+    baseline_directory: &str,
 ) -> Result<(
     f64,
     Distribution<f64>,
@@ -28,16 +30,16 @@ pub(crate) fn common<M: Measurement>(
     Vec<f64>,
     Estimates,
 )> {
-    let mut sample_file = criterion.output_directory.clone();
+    let mut sample_file = output_directory.to_owned();
     sample_file.push(id.as_directory_name());
-    sample_file.push(&criterion.baseline_directory);
+    sample_file.push(baseline_directory);
     sample_file.push("sample.json");
     let sample: SavedSample = fs::load(&sample_file)?;
     let SavedSample { iters, times, .. } = sample;
 
-    let mut estimates_file = criterion.output_directory.clone();
+    let mut estimates_file = output_directory.to_owned();
     estimates_file.push(id.as_directory_name());
-    estimates_file.push(&criterion.baseline_directory);
+    estimates_file.push(baseline_directory);
     estimates_file.push("estimates.json");
     let base_estimates: Estimates = fs::load(&estimates_file)?;
 
@@ -48,14 +50,19 @@ pub(crate) fn common<M: Measurement>(
         .collect();
     let base_avg_time_sample = Sample::new(&base_avg_times);
 
-    let mut change_dir = criterion.output_directory.clone();
+    let mut change_dir = output_directory.to_owned();
     change_dir.push(id.as_directory_name());
     change_dir.push("change");
     fs::mkdirp(&change_dir)?;
     let (t_statistic, t_distribution) = t_test(avg_times, base_avg_time_sample, config);
 
-    let (estimates, relative_distributions) =
-        estimates(id, avg_times, base_avg_time_sample, config, criterion);
+    let (estimates, relative_distributions) = estimates(
+        id,
+        avg_times,
+        base_avg_time_sample,
+        config,
+        output_directory,
+    );
     Ok((
         t_statistic,
         t_distribution,
@@ -98,12 +105,12 @@ fn t_test(
 }
 
 // Estimates the relative change in the statistics of the population
-fn estimates<M: Measurement>(
+fn estimates(
     id: &BenchmarkId,
     avg_times: &Sample<f64>,
     base_avg_times: &Sample<f64>,
     config: &BenchmarkConfig,
-    criterion: &Criterion<M>,
+    output_directory: &Path,
 ) -> (ChangeEstimates, ChangeDistributions) {
     fn stats(a: &Sample<f64>, b: &Sample<f64>) -> (f64, f64) {
         (
@@ -132,7 +139,7 @@ fn estimates<M: Measurement>(
 
     {
         log_if_err!({
-            let mut estimates_path = criterion.output_directory.clone();
+            let mut estimates_path = output_directory.to_owned();
             estimates_path.push(id.as_directory_name());
             estimates_path.push("change");
             estimates_path.push("estimates.json");

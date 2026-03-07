@@ -277,8 +277,8 @@ impl ReportContext {
 }
 
 pub(crate) trait Report {
-    fn test_start(&self, _id: &BenchmarkId, _context: &ReportContext) {}
-    fn test_pass(&self, _id: &BenchmarkId, _context: &ReportContext) {}
+    fn test_start(&self, _id: &BenchmarkId) {}
+    fn test_pass(&self, _id: &BenchmarkId) {}
 
     fn benchmark_start(&self, _id: &BenchmarkId, _context: &ReportContext) {}
     fn profile(&self, _id: &BenchmarkId, _context: &ReportContext, _profile_ns: f64) {}
@@ -342,8 +342,8 @@ macro_rules! reports_impl {
 }
 
 impl Report for Reports {
-    reports_impl!(fn test_start(&self, id: &BenchmarkId, context: &ReportContext));
-    reports_impl!(fn test_pass(&self, id: &BenchmarkId, context: &ReportContext));
+    reports_impl!(fn test_start(&self, id: &BenchmarkId));
+    reports_impl!(fn test_pass(&self, id: &BenchmarkId));
     reports_impl!(fn benchmark_start(&self, id: &BenchmarkId, context: &ReportContext));
     reports_impl!(fn profile(&self, id: &BenchmarkId, context: &ReportContext, profile_ns: f64));
     reports_impl!(fn warmup(&self, id: &BenchmarkId, context: &ReportContext, warmup_ns: f64));
@@ -489,10 +489,10 @@ impl CliReport {
     }
 }
 impl Report for CliReport {
-    fn test_start(&self, id: &BenchmarkId, _: &ReportContext) {
+    fn test_start(&self, id: &BenchmarkId) {
         println!("Testing {}", id);
     }
-    fn test_pass(&self, _: &BenchmarkId, _: &ReportContext) {
+    fn test_pass(&self, _: &BenchmarkId) {
         println!("Success");
     }
 
