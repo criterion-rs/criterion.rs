@@ -1,0 +1,25 @@
+# Run cocogitto in PRs via cocogitto-action runner to support local cog.toml config.
+# (which cocogitto-bot seems to not support for some reason?)
+name: Cocogitto check
+
+on:
+  pull_request:
+
+jobs:
+  cog:
+    name: "Check conventional commits"
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: "Checkout Repository"
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-tags: true
+          fetch-depth: 0
+          # pick the pr HEAD instead of the merge commit
+          ref: ${{github.event.pull_request.head.sha}}
+      - name: Conventional commit check
+        uses: cocogitto/cocogitto-action@v4.1.0
+        with:
+          command: check
+          args: ${{github.event.pull_request.base.sha}}..${{github.event.pull_request.head.sha}}
