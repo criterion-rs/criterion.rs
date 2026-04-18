@@ -19,7 +19,7 @@ jobs:
           # pick the pr HEAD instead of the merge commit
           ref: ${{github.event.pull_request.head.sha}}
       - name: Conventional commit check
-        uses: cocogitto/cocogitto-action@v4.1.0
+        uses: cocogitto/cocogitto-action@v4.2.0
         with:
           command: check
           args: ${{github.event.pull_request.base.sha}}..${{github.event.pull_request.head.sha}}
