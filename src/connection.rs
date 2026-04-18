@@ -308,13 +308,13 @@ impl From<&InternalBenchmarkId> for RawBenchmarkId {
 #[derive(Debug, Serialize)]
 pub enum AxisScale {
     Linear,
-    Logarithmic,
+    Logarithmic_with_base(f64),
 }
 impl From<crate::AxisScale> for AxisScale {
     fn from(other: crate::AxisScale) -> Self {
         match other {
             crate::AxisScale::Linear => AxisScale::Linear,
-            crate::AxisScale::Logarithmic => AxisScale::Logarithmic,
+            crate::AxisScale::Logarithmic(base) => AxisScale::Logarithmic_with_base(base),
         }
     }
 }
