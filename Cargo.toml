@@ -38,7 +38,6 @@ exclude = ["book/*"]
 anes = "0.1.4"
 criterion-plot = { path = "plot", version = "0.8.2" }
 itertools = "0.13"
-page_size = "0.6"
 serde = { version = "1.0.100", features = ["derive"] }
 serde_json = "1.0.100"
 ciborium = "0.2.0"
@@ -62,7 +61,8 @@ tokio = { version = "1.0", default-features = false, features = [
 ], optional = true }
 
 [target.'cfg(any(windows, unix))'.dependencies]
-alloca = "0.4"
+alloca = { version = "0.4", optional = true }
+page_size = { version = "0.6", optional = true }
 
 [dependencies.plotters]
 version = "^0.3.2"
@@ -85,10 +85,13 @@ stable = [
     "async_smol",
     "async_tokio",
 ]
-default = ["rayon", "plotters", "cargo_bench_support"]
+default = ["rayon", "plotters", "cargo_bench_support", "alloca"]
 
 # This is a legacy feature that no longer does anything, but removing it would be a semver break.
 real_blackbox = []
+
+# Enable alloca-based memory layout randomization.
+alloca = ["dep:alloca", "dep:page_size"]
 
 # Enable rayon support
 rayon = ["dep:rayon"]
