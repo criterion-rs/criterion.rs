@@ -320,13 +320,31 @@ impl From<crate::AxisScale> for AxisScale {
 }
 
 #[derive(Debug, Serialize)]
+pub enum AxisRange {
+    Fit,
+    FullScale,
+    Auto,
+}
+impl From<crate::AxisRange> for AxisRange {
+    fn from(other: crate::AxisRange) -> Self {
+        match other {
+            crate::AxisRange::Fit => AxisRange::Fit,
+            crate::AxisRange::FullScale => AxisRange::FullScale,
+            crate::AxisRange::Auto => AxisRange::Auto,
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
 pub struct PlotConfiguration {
     summary_scale: AxisScale,
+    summary_range: AxisRange,
 }
 impl From<&crate::PlotConfiguration> for PlotConfiguration {
     fn from(other: &crate::PlotConfiguration) -> Self {
         PlotConfiguration {
             summary_scale: other.summary_scale.into(),
+            summary_range: other.summary_range.into(),
         }
     }
 }
