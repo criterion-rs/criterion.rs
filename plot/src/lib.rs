@@ -861,6 +861,11 @@ pub enum Scale {
 #[derive(Clone, Copy)]
 pub struct ScaleFactor(pub f64);
 
+/// Axis tick formatting
+#[allow(missing_docs)]
+#[derive(Clone)]
+pub struct Format(pub String);
+
 /// Output terminal
 #[allow(missing_docs)]
 #[derive(Clone, Copy)]

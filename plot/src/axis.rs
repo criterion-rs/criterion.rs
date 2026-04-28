@@ -2,11 +2,11 @@
 
 use std::borrow::Cow;
 
-use crate::map;
 use crate::traits::{Configure, Data, Set};
 use crate::{
     grid, Axis, Default, Display, Grid, Label, Range, Scale, ScaleFactor, Script, TicLabels,
 };
+use crate::{map, Format};
 
 /// Properties of the coordinate axes
 #[derive(Clone)]
@@ -18,6 +18,7 @@ pub struct Properties {
     range: Option<(f64, f64)>,
     scale_factor: f64,
     tics: Option<String>,
+    format: Option<String>,
 }
 
 impl Default for Properties {
@@ -30,6 +31,7 @@ impl Default for Properties {
             range: None,
             scale_factor: 1.,
             tics: None,
+            format: None,
         }
     }
 }
@@ -150,6 +152,19 @@ where
     }
 }
 
+impl Set<Format> for Properties {
+    /// Changes the *tick format* of the axis.
+    ///
+    /// Specifies how the tick values should be printed into tick labels.
+    ///
+    /// **Note** Not specified by default, plotter's default is kept.
+    ///
+    fn set(&mut self, format: Format) -> &mut Properties {
+        self.format = Some(format.0);
+
+        self
+    }
+}
 impl Script for (Axis, &Properties) {
     fn script(&self) -> String {
         let &(axis, properties) = self;
@@ -181,6 +196,10 @@ impl Script for (Axis, &Properties) {
 
         for (grid, properties) in properties.grids.iter() {
             script.push_str(&(axis, grid, properties).script());
+        }
+
+        if let Some(format) = &properties.format {
+            script.push_str(&format!("set format {} \"{}\"\n", axis_, format))
         }
 
         script

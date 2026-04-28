@@ -2,7 +2,7 @@ mod gnuplot_backend;
 #[cfg(feature = "plotters")]
 mod plotters_backend;
 
-use criterion_plot::Scale;
+use criterion_plot::{Format, Scale};
 pub(crate) use gnuplot_backend::Gnuplot;
 #[cfg(feature = "plotters")]
 pub(crate) use plotters_backend::PlottersBackend;
@@ -42,6 +42,19 @@ impl From<AxisScale> for Scale {
         match value {
             AxisScale::Linear => Scale::Linear,
             AxisScale::Logarithmic(base) => Scale::Logarithmic(base),
+        }
+    }
+}
+
+impl From<AxisScale> for Format {
+    fn from(value: AxisScale) -> Self {
+        match value {
+            // FIXME: this overly pessimistic.
+            AxisScale::Logarithmic(10.0) => Format("%.3s%c".to_string()),
+            AxisScale::Logarithmic(base) if base.fract() == 0.0 => {
+                Format(format!("{}\u{22C5}{base}^{}", "%.3l", "{%L}"))
+            }
+            AxisScale::Linear | AxisScale::Logarithmic(_) => Format("%g".to_string()),
         }
     }
 }
