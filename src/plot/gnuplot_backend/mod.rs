@@ -202,6 +202,7 @@ impl Plotter for Gnuplot {
             &path,
             value_type,
             ctx.context.plot_config.summary_scale,
+            ctx.context.plot_config.summary_range,
         ));
     }
 
@@ -219,6 +220,7 @@ impl Plotter for Gnuplot {
             all_curves,
             &violin_path,
             ctx.context.plot_config.summary_scale,
+            ctx.context.plot_config.summary_range,
         ));
     }
 

@@ -1,3 +1,5 @@
+use crate::{plot::adjust_range, AxisRange};
+
 use {
     super::*,
     crate::AxisScale,
@@ -21,6 +23,7 @@ static COMPARISON_COLORS: [RGBColor; NUM_COLORS] = [
     RGBColor(0, 255, 127),
 ];
 
+#[expect(clippy::too_many_arguments)]
 pub(crate) fn line_comparison(
     line_cfg: LinePlotConfig,
     formatter: &dyn ValueFormatter,
@@ -29,13 +32,20 @@ pub(crate) fn line_comparison(
     path: &Path,
     value_type: ValueType,
     axis_scale: AxisScale,
+    axis_range: AxisRange,
 ) {
     let (unit, series_data) = line_comparison_series_data(line_cfg, formatter, all_curves);
 
-    let x_range =
-        plotters::data::fitting_range(series_data.iter().flat_map(|(_, xs, _)| xs.iter()));
-    let y_range =
-        plotters::data::fitting_range(series_data.iter().flat_map(|(_, _, ys)| ys.iter()));
+    let x_range = adjust_range(
+        axis_scale,
+        axis_range,
+        plotters::data::fitting_range(series_data.iter().flat_map(|(_, xs, _)| xs.iter())),
+    );
+    let y_range = adjust_range(
+        axis_scale,
+        axis_range,
+        plotters::data::fitting_range(series_data.iter().flat_map(|(_, _, ys)| ys.iter())),
+    );
     let root_area = SVGBackend::new(&path, SIZE)
         .into_drawing_area()
         .titled(&format!("{}: Comparison", title), (DEFAULT_FONT, 20))
@@ -174,6 +184,7 @@ pub fn violin(
     all_curves: &[&(&BenchmarkId, Vec<f64>)],
     path: &Path,
     axis_scale: AxisScale,
+    axis_range: AxisRange,
 ) {
     let all_curves_vec = all_curves.iter().rev().cloned().collect::<Vec<_>>();
     let all_curves: &[&(&BenchmarkId, Vec<f64>)] = &all_curves_vec;
@@ -212,8 +223,12 @@ pub fn violin(
         formatter.scale_values(max, xs);
     });
 
-    let mut x_range = plotters::data::fitting_range(kdes.iter().flat_map(|(_, xs, _)| xs.iter()));
-    x_range.start = 0.0;
+    let x_range = adjust_range(
+        axis_scale,
+        axis_range,
+        plotters::data::fitting_range(kdes.iter().flat_map(|(_, xs, _)| xs.iter())),
+    );
+
     let y_range = -0.5..all_curves.len() as f64 - 0.5;
 
     let size = (960, 150 + (18 * all_curves.len() as u32));

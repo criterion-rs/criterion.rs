@@ -1,3 +1,5 @@
+use crate::{plot::adjust_range, AxisRange};
+
 use {
     super::{
         debug_script, gnuplot_escape, DARK_BLUE, DEFAULT_FONT, KDE_POINTS, LINEWIDTH, POINT_SIZE,
@@ -41,7 +43,16 @@ impl AxisScale {
     }
 }
 
+fn compute_range(axis_scale: AxisScale, axis_range: AxisRange, v: core::ops::Range<f64>) -> Range {
+    let range = adjust_range(axis_scale, axis_range, v);
+    match axis_range {
+        AxisRange::Fit | AxisRange::FullScale => Range::Limits(range.start, range.end),
+        AxisRange::Auto => Range::Auto,
+    }
+}
+
 #[allow(clippy::explicit_counter_loop)]
+#[expect(clippy::too_many_arguments)]
 pub(crate) fn line_comparison(
     line_cfg: LinePlotConfig,
     formatter: &dyn ValueFormatter,
@@ -50,6 +61,7 @@ pub(crate) fn line_comparison(
     path: &Path,
     value_type: ValueType,
     axis_scale: AxisScale,
+    axis_range: AxisRange,
 ) -> Child {
     let path = PathBuf::from(path);
     let mut f = Figure::new();
@@ -61,6 +73,33 @@ pub(crate) fn line_comparison(
         ValueType::Value => "",
     };
 
+    let ((min_id, min), (max_id, max)) = match all_curves
+        .iter()
+        .map(|&(id, data)| (*id, Sample::new(data).mean()))
+        .minmax_by_key(|(_id, sample)| *sample)
+    {
+        itertools::MinMaxResult::NoElements => unreachable!(),
+        itertools::MinMaxResult::OneElement(e) => (e, e),
+        itertools::MinMaxResult::MinMax(min, max) => (min, max),
+    };
+
+    let scale_y = |id, y| {
+        let mut y = [y];
+        (line_cfg.scale)(formatter, max_id, max, id, &mut y);
+        y[0]
+    };
+
+    let input_range = compute_range(
+        axis_scale,
+        axis_range,
+        min_id.as_number().unwrap()..max_id.as_number().unwrap(),
+    );
+    let output_range = compute_range(
+        axis_scale,
+        axis_range,
+        scale_y(min_id, min)..scale_y(max_id, max),
+    );
+
     f.set(Font(DEFAULT_FONT))
         .set(SIZE)
         .configure(Key, |k| {
@@ -71,19 +110,11 @@ pub(crate) fn line_comparison(
         .set(Title(format!("{}: Comparison", gnuplot_escape(title))))
         .configure(Axis::BottomX, |a| {
             a.set(Label(format!("Input{}", input_suffix)))
+                .set(input_range)
                 .set(axis_scale.to_gnuplot())
         });
 
     let mut i = 0;
-
-    let (max_id, max) = all_curves
-        .iter()
-        .map(|&(id, data)| (*id, Sample::new(data).mean()))
-        .fold(None, |prev: Option<(&BenchmarkId, f64)>, next| match prev {
-            Some(prev) if prev.1 >= next.1 => Some(prev),
-            _ => Some(next),
-        })
-        .unwrap();
 
     let mut max_formatted = [max];
     let unit = (line_cfg.scale)(formatter, max_id, max, max_id, &mut max_formatted);
@@ -92,6 +123,7 @@ pub(crate) fn line_comparison(
         a.configure(Grid::Major, |g| g.show())
             .configure(Grid::Minor, |g| g.hide())
             .set(Label(format!("Average {} ({})", line_cfg.label, unit)))
+            .set(output_range)
             .set(axis_scale.to_gnuplot())
     });
 
@@ -104,11 +136,10 @@ pub(crate) fn line_comparison(
                 // Unwrap is fine here because it will only fail if the assumptions above are not true
                 // ie. programmer error.
                 let x = id.as_number().unwrap();
-                let mut y = [Sample::new(sample).mean()];
+                let y = Sample::new(sample).mean();
+                let y = scale_y(id, y);
 
-                (line_cfg.scale)(formatter, max_id, max, id, &mut y);
-
-                (x, y[0])
+                (x, y)
             })
             .collect();
         tuples.sort_by(|&(ax, _), &(bx, _)| ax.partial_cmp(&bx).unwrap_or(Ordering::Less));
@@ -143,6 +174,7 @@ pub fn violin(
     all_curves: &[&(&BenchmarkId, Vec<f64>)],
     path: &Path,
     axis_scale: AxisScale,
+    axis_range: AxisRange,
 ) -> Child {
     let path = PathBuf::from(&path);
     let all_curves_vec = all_curves.iter().rev().cloned().collect::<Vec<_>>();
@@ -178,6 +210,8 @@ pub fn violin(
     // appropriate unit. It will multiple `one` by 1000, and return "ms".
     let unit = formatter.scale_values((min + max) / 2.0, &mut one);
 
+    let time_range = compute_range(axis_scale, axis_range, (min * one[0])..(max * one[0]));
+
     let tics = || (0..).map(|x| (f64::from(x)) + 0.5);
     let size = Size(1280, 200 + (25 * all_curves.len()));
     let mut f = Figure::new();
@@ -187,8 +221,8 @@ pub fn violin(
         .configure(Axis::BottomX, |a| {
             a.configure(Grid::Major, |g| g.show())
                 .configure(Grid::Minor, |g| g.hide())
-                .set(Range::Limits(0., max * one[0]))
                 .set(Label(format!("Average time ({})", unit)))
+                .set(time_range)
                 .set(axis_scale.to_gnuplot())
         })
         .configure(Axis::LeftY, |a| {
