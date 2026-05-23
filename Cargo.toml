@@ -36,7 +36,7 @@ exclude = ["book/*"]
 
 [dependencies]
 anes = "0.1.4"
-criterion-plot = { path = "plot", version = "0.8.2" }
+criterion-plot = { path = "plot", version = "0.8.2", optional = true }
 itertools = "0.13"
 page_size = "0.6"
 serde = { version = "1.0.100", features = ["derive"] }
@@ -44,7 +44,7 @@ serde_json = "1.0.100"
 ciborium = "0.2.0"
 clap = { version = "4.5", default-features = false, features = ["std", "help"] }
 walkdir = "2.3"
-tinytemplate = "1.1"
+tinytemplate = { version = "1.1", optional = true }
 cast = "0.3"
 num-traits = { version = "0.2", default-features = false, features = ["std"] }
 oorandom = "11.1"
@@ -106,7 +106,7 @@ async_smol = ["dep:smol", "async"]
 async_tokio = ["dep:tokio", "async"]
 
 # Make Criterion.rs generate its own plots (as opposed to using cargo-criterion)
-html_reports = []
+html_reports = ["dep:criterion-plot", "dep:tinytemplate"]
 
 # Make Criterion.rs usable outside of cargo-criterion.
 cargo_bench_support = []

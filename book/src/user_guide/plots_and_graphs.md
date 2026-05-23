@@ -6,12 +6,11 @@ understanding of the behavior of the benchmark. These charts will be generated w
 it is not available. The examples below were generated using the gnuplot backend, but the plotters
 ones are similar.
 
-Note that in older versions of criterion.rs html reports were enabled by default. Recent versions
-have introduced a cargo feature for plot and html generation. In order to activate the html report
-generation make sure that your `Cargo.toml` activates the feature:
+HTML reports and plot generation are controlled by the non-default `html_reports` feature. Enable it
+in your `Cargo.toml` to generate HTML reports:
 
 ```toml
-criterion = { version = "0.5", features = ["html_reports"] }
+criterion = { version = "0.8", features = ["html_reports"] }
 ```
 
 ## File Structure

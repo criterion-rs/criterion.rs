@@ -48,10 +48,12 @@ mod error;
 mod estimate;
 mod format;
 mod fs;
+#[cfg(feature = "html_reports")]
 mod html;
 mod kde;
 mod macros;
 pub mod measurement;
+#[cfg(feature = "html_reports")]
 mod plot;
 pub mod profiler;
 mod report;
@@ -70,19 +72,20 @@ use std::{
     time::Duration,
 };
 
-use {
-    criterion_plot::{Version, VersionError},
-    std::sync::OnceLock,
-};
+#[cfg(feature = "html_reports")]
+use criterion_plot::{Version, VersionError};
+use std::sync::OnceLock;
 
-#[cfg(feature = "plotters")]
+#[cfg(feature = "html_reports")]
+use crate::html::Html;
+#[cfg(all(feature = "html_reports", feature = "plotters"))]
 use crate::plot::PlottersBackend;
+#[cfg(feature = "html_reports")]
+use crate::plot::{Gnuplot, Plotter};
 use crate::{
     benchmark::BenchmarkConfig,
     connection::{Connection, OutgoingMessage},
-    html::Html,
     measurement::{Measurement, WallTime},
-    plot::{Gnuplot, Plotter},
     profiler::{ExternalProfiler, Profiler},
     report::{BencherReport, CliReport, CliVerbosity, Report, ReportContext, Reports},
 };
@@ -94,12 +97,14 @@ pub use crate::{
     benchmark_group::{BenchmarkGroup, BenchmarkId},
 };
 
+#[cfg(feature = "html_reports")]
 fn gnuplot_version() -> &'static Result<Version, VersionError> {
     static GNUPLOT_VERSION: OnceLock<Result<Version, VersionError>> = OnceLock::new();
 
     GNUPLOT_VERSION.get_or_init(criterion_plot::version)
 }
 
+#[cfg(feature = "html_reports")]
 fn default_plotting_backend() -> &'static PlottingBackend {
     static DEFAULT_PLOTTING_BACKEND: OnceLock<PlottingBackend> = OnceLock::new();
 
@@ -278,6 +283,7 @@ pub enum PlottingBackend {
     /// Null plotting backend which outputs nothing,
     None,
 }
+#[cfg(feature = "html_reports")]
 impl PlottingBackend {
     fn create_plotter(&self) -> Option<Box<dyn Plotter>> {
         match self {
@@ -405,6 +411,7 @@ impl Default for Criterion {
             cli: CliReport::new(false, false, CliVerbosity::Normal),
             bencher_enabled: false,
             bencher: BencherReport,
+            #[cfg(feature = "html_reports")]
             html: default_plotting_backend().create_plotter().map(Html::new),
             csv_enabled: cfg!(feature = "csv_output"),
         };
@@ -442,7 +449,10 @@ impl Default for Criterion {
             criterion.report.cli_enabled = false;
             criterion.report.bencher_enabled = false;
             criterion.report.csv_enabled = false;
-            criterion.report.html = None;
+            #[cfg(feature = "html_reports")]
+            {
+                criterion.report.html = None;
+            }
         }
         criterion
     }
@@ -487,6 +497,7 @@ impl<M: Measurement> Criterion<M> {
     /// Panics if `backend` is [`PlottingBackend::Gnuplot`] and `gnuplot` is not available.
     ///
     /// [plotting backend]: PlottingBackend
+    #[cfg(feature = "html_reports")]
     pub fn plotting_backend(mut self, backend: PlottingBackend) -> Criterion<M> {
         if let PlottingBackend::Gnuplot = backend {
             assert!(
@@ -498,6 +509,16 @@ impl<M: Measurement> Criterion<M> {
         }
 
         self.report.html = backend.create_plotter().map(Html::new);
+        self
+    }
+
+    #[must_use]
+    /// Set the plotting backend.
+    ///
+    /// This has no effect when Criterion.rs is built without the `html_reports` feature.
+    #[cfg(not(feature = "html_reports"))]
+    pub fn plotting_backend(self, backend: PlottingBackend) -> Criterion<M> {
+        let _ = backend;
         self
     }
 
@@ -641,6 +662,7 @@ impl<M: Measurement> Criterion<M> {
 
     #[must_use]
     /// Enables plotting
+    #[cfg(feature = "html_reports")]
     pub fn with_plots(mut self) -> Criterion<M> {
         // If running under cargo-criterion then don't re-enable the reports; let it do the reporting.
         if self.connection.is_none() && self.report.html.is_none() {
@@ -655,9 +677,28 @@ impl<M: Measurement> Criterion<M> {
     }
 
     #[must_use]
+    /// Enables plotting.
+    ///
+    /// This has no effect when Criterion.rs is built without the `html_reports` feature.
+    #[cfg(not(feature = "html_reports"))]
+    pub fn with_plots(self) -> Criterion<M> {
+        self
+    }
+
+    #[must_use]
     /// Disables plotting
+    #[cfg(feature = "html_reports")]
     pub fn without_plots(mut self) -> Criterion<M> {
         self.report.html = None;
+        self
+    }
+
+    #[must_use]
+    /// Disables plotting.
+    ///
+    /// This has no effect when Criterion.rs is built without the `html_reports` feature.
+    #[cfg(not(feature = "html_reports"))]
+    pub fn without_plots(self) -> Criterion<M> {
         self
     }
 
@@ -1057,7 +1098,10 @@ https://criterion-rs.github.io/book/faq.html
             self.report.cli_enabled = false;
             self.report.bencher_enabled = false;
             self.report.csv_enabled = false;
-            self.report.html = None;
+            #[cfg(feature = "html_reports")]
+            {
+                self.report.html = None;
+            }
         } else {
             match matches.get_one("output-format").map(String::as_str) {
                 Some("bencher") => {
