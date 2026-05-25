@@ -29,4 +29,6 @@
   - [Comparison to Criterion.rs](./iai/comparison.md)
 - [Analysis Process](./analysis.md)
 - [Frequently Asked Questions](./faq.md)
+- [Benchmarking Tips](./tips/tips.md)
+  - [Disabling ASLR](./tips/aslr.md)
 - [Migrating from 0.2.* to 0.3.*](./migrating_0_2_to_0_3.md)

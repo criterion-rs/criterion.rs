@@ -44,6 +44,7 @@ mod bencher;
 mod connection;
 #[cfg(feature = "csv_output")]
 mod csv_report;
+pub mod deaslr;
 mod error;
 mod estimate;
 mod format;

@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.8.2](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.1...criterion-v0.8.2) - 2026-02-04
 
+### Added
+
+- Add support for automatic disablement of ASLR security hardening feature
+  for the benchmark process, thus eliminating some execution-to-execution
+  performance variance.
+  This is as an optional feature, labelled `deaslr`.
+  Requires `nix` crate.
+
 ### Fixed
 
 - don't build alloca on unsupported targets

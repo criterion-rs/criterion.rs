@@ -1,6 +1,6 @@
-pub use std::hint::black_box;
-pub use criterion::Criterion;
 use criterion::measurement::WallTime;
+pub use criterion::Criterion;
+pub use std::hint::black_box;
 
 /// Stand-in for `bencher::Bencher` which uses Criterion.rs to perform the benchmark instead.
 pub struct Bencher<'a, 'b> {
@@ -10,7 +10,8 @@ pub struct Bencher<'a, 'b> {
 impl<'a, 'b> Bencher<'a, 'b> {
     /// Callback for benchmark functions to run to perform the benchmark
     pub fn iter<T, F>(&mut self, inner: F)
-        where F: FnMut() -> T
+    where
+        F: FnMut() -> T,
     {
         self.bencher.iter(inner);
     }
@@ -46,6 +47,8 @@ macro_rules! benchmark_group {
 macro_rules! benchmark_main {
     ($($group_name:path),+) => {
         fn main() {
+            $crate::deaslr::maybe_reenter_without_aslr();
+
             $(
                 $group_name();
             )+
