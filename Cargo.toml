@@ -90,7 +90,8 @@ default = ["rayon", "plotters", "cargo_bench_support", "alloca"]
 # This is a legacy feature that no longer does anything, but removing it would be a semver break.
 real_blackbox = []
 
-# Enable alloca-based memory layout randomization.
+# Enable alloca-based memory layout randomization. Reduces bias from memory
+# alignment and cache effects.
 alloca = ["dep:alloca", "dep:page_size"]
 
 # Enable rayon support
