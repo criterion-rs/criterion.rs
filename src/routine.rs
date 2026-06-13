@@ -250,7 +250,10 @@ where
         let mut results = Vec::with_capacity(iters.len());
         results.resize(iters.len(), 0.0);
         for (i, iters) in iters.iter().enumerate() {
-            #[cfg(any(target_family = "unix", target_family = "windows"))]
+            #[cfg(all(
+                feature = "alloca",
+                any(target_family = "unix", target_family = "windows")
+            ))]
             {
                 // Intentionally vary the stack allocation size to reduce measurement bias from
                 // memory alignment and cache effects.
@@ -265,7 +268,10 @@ where
                     },
                 );
             }
-            #[cfg(not(any(target_family = "unix", target_family = "windows")))]
+            #[cfg(not(all(
+                feature = "alloca",
+                any(target_family = "unix", target_family = "windows")
+            )))]
             {
                 b.iters = *iters;
                 (*f)(&mut b, black_box(parameter));
