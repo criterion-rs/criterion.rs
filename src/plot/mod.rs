@@ -6,6 +6,8 @@ pub(crate) use gnuplot_backend::Gnuplot;
 #[cfg(feature = "plotters")]
 pub(crate) use plotters_backend::PlottersBackend;
 
+use crate::{AxisRange, AxisScale};
+
 use {
     crate::{
         estimate::Statistic,
@@ -174,4 +176,52 @@ pub(crate) trait Plotter {
     fn t_test(&mut self, ctx: PlotContext<'_>, data: PlotData<'_>);
 
     fn wait(&mut self);
+}
+
+struct Lerp {
+    v0: f64,
+    v1: f64,
+}
+
+impl Lerp {
+    #[inline]
+    fn new(v0: f64, v1: f64) -> Self {
+        Self { v0, v1 }
+    }
+
+    #[inline]
+    fn eval(&self, t: f64) -> f64 {
+        self.v0 + t * (self.v1 - self.v0)
+    }
+}
+
+fn adjust_range(
+    axis_scale: AxisScale,
+    axis_range: AxisRange,
+    range: core::ops::Range<f64>,
+) -> core::ops::Range<f64> {
+    // Leave some empty space between the point
+    // that would otherwise be drawn on the axis, and the axis itself.
+    let offset = 0.025;
+
+    let apply_axis_scale = |x: f64| match axis_scale {
+        AxisScale::Linear => x,
+        AxisScale::Logarithmic => x.log10(),
+    };
+
+    let deapply_axis_scale = |x: f64| match axis_scale {
+        AxisScale::Linear => x,
+        AxisScale::Logarithmic => {
+            let base: f64 = 10.0;
+            base.powf(x)
+        }
+    };
+
+    let i = Lerp::new(apply_axis_scale(range.start), apply_axis_scale(range.end));
+    let min = deapply_axis_scale(i.eval(0.0 - offset));
+    let max = deapply_axis_scale(i.eval(1.0 + offset));
+    match axis_range {
+        AxisRange::Fit | AxisRange::Auto => min..max,
+        AxisRange::FullScale => 0.0..max,
+    }
 }
