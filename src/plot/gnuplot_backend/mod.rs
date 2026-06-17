@@ -201,7 +201,7 @@ impl Plotter for Gnuplot {
             all_curves,
             &path,
             value_type,
-            ctx.context.plot_config.summary_scale,
+            &ctx.context.plot_config.axis_scale,
         ));
     }
 
@@ -218,7 +218,7 @@ impl Plotter for Gnuplot {
             ctx.id.as_title(),
             all_curves,
             &violin_path,
-            ctx.context.plot_config.summary_scale,
+            &ctx.context.plot_config.axis_scale,
         ));
     }
 
