@@ -1,3 +1,5 @@
+use criterion_plot::Format;
+
 use {
     super::{
         debug_script, gnuplot_escape, DARK_BLUE, DEFAULT_FONT, KDE_POINTS, LINEWIDTH, POINT_SIZE,
@@ -32,15 +34,6 @@ static COMPARISON_COLORS: [Color; NUM_COLORS] = [
     Color::Rgb(0, 255, 127),
 ];
 
-impl AxisScale {
-    fn to_gnuplot(self) -> Scale {
-        match self {
-            AxisScale::Linear => Scale::Linear,
-            AxisScale::Logarithmic => Scale::Logarithmic,
-        }
-    }
-}
-
 #[allow(clippy::explicit_counter_loop)]
 pub(crate) fn line_comparison(
     line_cfg: LinePlotConfig,
@@ -71,7 +64,8 @@ pub(crate) fn line_comparison(
         .set(Title(format!("{}: Comparison", gnuplot_escape(title))))
         .configure(Axis::BottomX, |a| {
             a.set(Label(format!("Input{}", input_suffix)))
-                .set(axis_scale.to_gnuplot())
+                .set(Scale::from(axis_scale))
+                .set(Format::from(axis_scale))
         });
 
     let mut i = 0;
@@ -85,14 +79,48 @@ pub(crate) fn line_comparison(
         })
         .unwrap();
 
-    let mut max_formatted = [max];
-    let unit = (line_cfg.scale)(formatter, max_id, max, max_id, &mut max_formatted);
+    let (one, unit) = match axis_scale {
+        AxisScale::Linear => {
+            let mut one = max;
+            let unit = (line_cfg.scale)(
+                formatter,
+                max_id,
+                one,
+                max_id,
+                std::slice::from_mut(&mut one),
+            );
+            (max, unit)
+        }
+        AxisScale::Logarithmic(_) => {
+            let ns_per_s = 10f64.powi(9);
+            let bytes_per_ns = 10f64.powi(18); // ???!
+            let mut one = match line_cfg.label {
+                "time" => ns_per_s,
+                "throughput" => bytes_per_ns,
+                _ => unimplemented!("unexpected line plot"),
+            };
+            let unit = (line_cfg.scale)(
+                formatter,
+                max_id,
+                one,
+                max_id,
+                std::slice::from_mut(&mut one),
+            );
+            let one = match line_cfg.label {
+                "time" => one * ns_per_s,
+                "throughput" => bytes_per_ns,
+                _ => unimplemented!("unexpected line plot"),
+            };
+            (one, unit)
+        }
+    };
 
     f.configure(Axis::LeftY, |a| {
         a.configure(Grid::Major, |g| g.show())
             .configure(Grid::Minor, |g| g.hide())
             .set(Label(format!("Average {} ({})", line_cfg.label, unit)))
-            .set(axis_scale.to_gnuplot())
+            .set(Scale::from(axis_scale))
+            .set(Format::from(axis_scale))
     });
 
     // This assumes the curves are sorted. It also assumes that the benchmark IDs all have numeric
@@ -106,7 +134,7 @@ pub(crate) fn line_comparison(
                 let x = id.as_number().unwrap();
                 let mut y = [Sample::new(sample).mean()];
 
-                (line_cfg.scale)(formatter, max_id, max, id, &mut y);
+                (line_cfg.scale)(formatter, max_id, one, id, &mut y);
 
                 (x, y[0])
             })
@@ -172,11 +200,23 @@ pub fn violin(
             max = e;
         }
     }
-    let mut one = [1.0];
+
     // Scale the X axis units. Use the middle as a "typical value". E.g. if
     // it is 0.002 s then this function will decide that milliseconds are an
     // appropriate unit. It will multiple `one` by 1000, and return "ms".
-    let unit = formatter.scale_values((min + max) / 2.0, &mut one);
+    let (one, unit) = match axis_scale {
+        AxisScale::Linear => {
+            let mut one = 1.0;
+            let unit = formatter.scale_values((min + max) / 2.0, std::slice::from_mut(&mut one));
+            (one, unit)
+        }
+        AxisScale::Logarithmic(_) => {
+            let ns_per_s = 10f64.powi(9);
+            let mut one = 1.0;
+            let unit = formatter.scale_values(ns_per_s, std::slice::from_mut(&mut one));
+            (one, unit)
+        }
+    };
 
     let tics = || (0..).map(|x| (f64::from(x)) + 0.5);
     let size = Size(1280, 200 + (25 * all_curves.len()));
@@ -187,9 +227,10 @@ pub fn violin(
         .configure(Axis::BottomX, |a| {
             a.configure(Grid::Major, |g| g.show())
                 .configure(Grid::Minor, |g| g.hide())
-                .set(Range::Limits(0., max * one[0]))
+                .set(Range::Limits(0., max * one))
                 .set(Label(format!("Average time ({})", unit)))
-                .set(axis_scale.to_gnuplot())
+                .set(Scale::from(axis_scale))
+                .set(Format::from(axis_scale))
         })
         .configure(Axis::LeftY, |a| {
             a.set(Label("Input"))
@@ -208,7 +249,7 @@ pub fn violin(
         let y1: Vec<_> = y.iter().map(|&y| i + y * 0.45).collect();
         let y2: Vec<_> = y.iter().map(|&y| i - y * 0.45).collect();
 
-        let x: Vec<_> = x.iter().map(|&x| x * one[0]).collect();
+        let x: Vec<_> = x.iter().map(|&x| x * one).collect();
 
         f.plot(FilledCurve { x, y1, y2 }, |c| {
             if is_first {

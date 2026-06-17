@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.8.2](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.1...criterion-v0.8.2) - 2026-02-04
 
+### Changed
+
+- Added support for plots with logarithmic axis with base other than 10 (e.g. log2)
+
 ### Fixed
 
 - don't build alloca on unsupported targets
