@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - name: "Checkout Repository"
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7
         with:
           fetch-tags: true
           fetch-depth: 0

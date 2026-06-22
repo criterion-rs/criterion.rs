@@ -34,7 +34,7 @@ jobs:
           - ${{ needs.config.outputs.nightly }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
@@ -91,7 +91,7 @@ jobs:
     name: Check compatibility with nextest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ needs.config.outputs.stable }}
@@ -104,7 +104,7 @@ jobs:
     name: Check typos
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: crate-ci/typos@v1.46.2
 
   # Make sure the library builds with all dependencies downgraded to their
@@ -115,7 +115,7 @@ jobs:
     name: Check Minimal Version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install needed Rust toolchain versions
         run: |
