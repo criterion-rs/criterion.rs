@@ -12,7 +12,6 @@ use {
         AxisScale,
     },
     criterion_plot::prelude::*,
-    itertools::Itertools,
     std::{
         cmp::Ordering,
         path::{Path, PathBuf},
@@ -98,8 +97,9 @@ pub(crate) fn line_comparison(
     // This assumes the curves are sorted. It also assumes that the benchmark IDs all have numeric
     // values or throughputs and that value is sensible (ie. not a mix of bytes and elements
     // or whatnot)
-    for (key, group) in &all_curves.iter().chunk_by(|&&&(id, _)| &id.function_id) {
-        let mut tuples: Vec<_> = group
+    for chunk in all_curves.chunk_by(|a, b| a.0.function_id == b.0.function_id) {
+        let mut tuples: Vec<_> = chunk
+            .into_iter()
             .map(|&&(id, ref sample)| {
                 // Unwrap is fine here because it will only fail if the assumptions above are not true
                 // ie. programmer error.
@@ -114,7 +114,11 @@ pub(crate) fn line_comparison(
         tuples.sort_by(|&(ax, _), &(bx, _)| ax.partial_cmp(&bx).unwrap_or(Ordering::Less));
         let (xs, ys): (Vec<_>, Vec<_>) = tuples.into_iter().unzip();
 
-        let function_name = key.as_ref().map(|string| gnuplot_escape(string));
+        let function_name = chunk[0]
+            .0
+            .function_id
+            .as_ref()
+            .map(|string| gnuplot_escape(string));
 
         f.plot(Lines { x: &xs, y: &ys }, |c| {
             if let Some(name) = function_name {
