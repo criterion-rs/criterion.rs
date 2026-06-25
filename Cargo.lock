@@ -293,7 +293,6 @@ dependencies = [
  "criterion-plot",
  "csv",
  "futures",
- "itertools",
  "num-traits",
  "oorandom",
  "page_size",
@@ -316,7 +315,6 @@ name = "criterion-plot"
 version = "0.8.2"
 dependencies = [
  "cast",
- "itertools",
  "itertools-num",
  "num-complex",
  "rand",
@@ -564,15 +562,6 @@ name = "hermit-abi"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc0fef456e4baa96da950455cd02c081ca953b141298e41db3fc7e36b1da849c"
-
-[[package]]
-name = "itertools"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
-dependencies = [
- "either",
-]
 
 [[package]]
 name = "itertools-num"
