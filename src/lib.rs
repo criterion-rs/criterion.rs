@@ -1252,6 +1252,7 @@ where
     pub fn bench_with_input<F, I>(&mut self, id: BenchmarkId, input: &I, f: F) -> &mut Criterion<M>
     where
         F: FnMut(&mut Bencher<'_, M>, &I),
+        I: ?Sized,
     {
         // It's possible to use BenchmarkId::from_parameter to create a benchmark ID with no function
         // name. That's intended for use with BenchmarkGroups where the function name isn't necessary,
