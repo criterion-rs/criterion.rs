@@ -70,7 +70,7 @@ pub(crate) fn common(
         relative_distributions,
         iters,
         times,
-        base_avg_times.clone(),
+        base_avg_times,
         base_estimates,
     ))
 }
