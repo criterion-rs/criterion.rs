@@ -231,7 +231,7 @@ pub(crate) fn pdf_small(
 ) -> Child {
     let avg_times = &*measurements.avg_times;
     let typical = avg_times.max();
-    let mut scaled_avg_times: Vec<f64> = (avg_times as &Sample<f64>).iter().cloned().collect();
+    let mut scaled_avg_times: Vec<f64> = avg_times.iter().cloned().collect();
     let unit = formatter.scale_values(typical, &mut scaled_avg_times);
     let scaled_avg_times = Sample::new(&scaled_avg_times);
     let mean = scaled_avg_times.mean();
