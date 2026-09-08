@@ -1,13 +1,13 @@
 //! Error bar plots
 
-use std::borrow::Cow;
-
 use crate::data::Matrix;
 use crate::traits::{self, Data, Set};
 use crate::{
     Color, Display, ErrorBarDefault, Figure, Label, LineType, LineWidth, Plot, PointSize,
     PointType, Script,
 };
+use std::borrow::Cow;
+use std::iter;
 
 /// Properties common to error bar plots
 pub struct Properties {
@@ -259,7 +259,8 @@ where
             } => (x, y, y_low, y_high, y_factor),
         };
         let data = Matrix::new(
-            itertools::izip!(x, y, length, height),
+            iter::zip(x.into_iter().zip(y), length.into_iter().zip(height))
+                .map(|((x, y), (l, h))| (x, y, l, h)),
             (x_factor, y_factor, e_factor, e_factor),
         );
         self.plots.push(Plot::new(
