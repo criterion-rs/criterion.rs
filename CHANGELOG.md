@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.0](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.2...criterion-v0.9.0) - 2026-09-08
+
+### Added
+
+- *(deps)* Make alloca optional ([#69](https://github.com/criterion-rs/criterion.rs/pull/69))
+- Add cocogitto conventional commits check
+
+### Fixed
+
+- *(perf)* Don't obtain output directory or run cargo metadata in test mode ([#63](https://github.com/criterion-rs/criterion.rs/pull/63))
+- include bench names in quick bencher report
+
+### Other
+
+- *(deps)* bump actions/checkout from 6 to 7
+- *(deps)* bump crate-ci/typos from 1.45.1 to 1.46.2 ([#85](https://github.com/criterion-rs/criterion.rs/pull/85))
+- *(deps)* bump oras-project/setup-oras from 1 to 2
+- *(deps)* bump crate-ci/typos from 1.44.0 to 1.45.1
+- *(deps)* bump cocogitto/cocogitto-action from 4.1.0 to 4.2.0
+- *(deps)* bump crate-ci/typos from 1.43.5 to 1.44.0 ([#61](https://github.com/criterion-rs/criterion.rs/pull/61))
+- *(deps)* bump crate-ci/typos from 1.43.1 to 1.43.5
+- update CI workflow ([#57](https://github.com/criterion-rs/criterion.rs/pull/57))
+- Fix clippy for stable features
+- fix all `cargo clippy` suggestions
+
 ## [0.8.2](https://github.com/criterion-rs/criterion.rs/compare/criterion-v0.8.1...criterion-v0.8.2) - 2026-02-04
 
 ### Fixed
