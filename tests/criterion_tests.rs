@@ -137,6 +137,18 @@ fn test_without_plots() {
     }
 }
 
+#[cfg(all(feature = "plotters", not(feature = "html_reports")))]
+#[test]
+fn test_plotters_without_html_reports_does_not_generate_report() {
+    let dir = temp_dir();
+    short_benchmark(&dir).bench_function("test_html_reports_disabled", |b| b.iter(|| 10));
+
+    let benchmark_dir = dir.path().join("test_html_reports_disabled");
+    verify_stats(&benchmark_dir, "new");
+    verify_stats(&benchmark_dir, "base");
+    verify_not_exists(&benchmark_dir, "report");
+}
+
 #[test]
 fn test_save_baseline() {
     let dir = temp_dir();

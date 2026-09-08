@@ -1,8 +1,10 @@
 #[cfg(feature = "csv_output")]
 use crate::csv_report::FileCsvReport;
+#[cfg(feature = "html_reports")]
+use crate::html::Html;
 use crate::stats::bivariate::regression::Slope;
+use crate::stats::bivariate::Data;
 use crate::stats::univariate::outliers::tukey::LabeledSample;
-use crate::{html::Html, stats::bivariate::Data};
 
 use crate::estimate::{ChangeDistributions, ChangeEstimates, Distributions, Estimate, Estimates};
 use crate::format;
@@ -319,6 +321,7 @@ pub(crate) struct Reports {
     pub(crate) bencher_enabled: bool,
     pub(crate) bencher: BencherReport,
     pub(crate) csv_enabled: bool,
+    #[cfg(feature = "html_reports")]
     pub(crate) html: Option<Html>,
 }
 macro_rules! reports_impl {
@@ -334,6 +337,7 @@ macro_rules! reports_impl {
             if self.csv_enabled {
                 FileCsvReport.$name($($argn),*);
             }
+            #[cfg(feature = "html_reports")]
             if let Some(reporter) = &self.html {
                 reporter.$name($($argn),*);
             }
