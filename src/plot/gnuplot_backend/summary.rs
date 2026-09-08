@@ -20,16 +20,30 @@ use {
     },
 };
 
-const NUM_COLORS: usize = 8;
+// Tableau 20: the Tableau 10 hues first, then their lighter variants, so that
+// groups with few series get the most separated colors.
+const NUM_COLORS: usize = 20;
 static COMPARISON_COLORS: [Color; NUM_COLORS] = [
-    Color::Rgb(178, 34, 34),
-    Color::Rgb(46, 139, 87),
-    Color::Rgb(0, 139, 139),
-    Color::Rgb(255, 215, 0),
-    Color::Rgb(0, 0, 139),
-    Color::Rgb(220, 20, 60),
-    Color::Rgb(139, 0, 139),
-    Color::Rgb(0, 255, 127),
+    Color::Rgb(31, 119, 180),
+    Color::Rgb(255, 127, 14),
+    Color::Rgb(44, 160, 44),
+    Color::Rgb(214, 39, 40),
+    Color::Rgb(148, 103, 189),
+    Color::Rgb(140, 86, 75),
+    Color::Rgb(227, 119, 194),
+    Color::Rgb(127, 127, 127),
+    Color::Rgb(188, 189, 34),
+    Color::Rgb(23, 190, 207),
+    Color::Rgb(174, 199, 232),
+    Color::Rgb(255, 187, 120),
+    Color::Rgb(152, 223, 138),
+    Color::Rgb(255, 152, 150),
+    Color::Rgb(197, 176, 213),
+    Color::Rgb(196, 156, 148),
+    Color::Rgb(247, 182, 210),
+    Color::Rgb(199, 199, 199),
+    Color::Rgb(219, 219, 141),
+    Color::Rgb(158, 218, 229),
 ];
 
 impl AxisScale {

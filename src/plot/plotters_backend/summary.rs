@@ -9,16 +9,30 @@ use {
     std::{cmp::Ordering, path::Path},
 };
 
-const NUM_COLORS: usize = 8;
+// Tableau 20: the Tableau 10 hues first, then their lighter variants, so that
+// groups with few series get the most separated colors.
+const NUM_COLORS: usize = 20;
 static COMPARISON_COLORS: [RGBColor; NUM_COLORS] = [
-    RGBColor(178, 34, 34),
-    RGBColor(46, 139, 87),
-    RGBColor(0, 139, 139),
-    RGBColor(255, 215, 0),
-    RGBColor(0, 0, 139),
-    RGBColor(220, 20, 60),
-    RGBColor(139, 0, 139),
-    RGBColor(0, 255, 127),
+    RGBColor(31, 119, 180),
+    RGBColor(255, 127, 14),
+    RGBColor(44, 160, 44),
+    RGBColor(214, 39, 40),
+    RGBColor(148, 103, 189),
+    RGBColor(140, 86, 75),
+    RGBColor(227, 119, 194),
+    RGBColor(127, 127, 127),
+    RGBColor(188, 189, 34),
+    RGBColor(23, 190, 207),
+    RGBColor(174, 199, 232),
+    RGBColor(255, 187, 120),
+    RGBColor(152, 223, 138),
+    RGBColor(255, 152, 150),
+    RGBColor(197, 176, 213),
+    RGBColor(196, 156, 148),
+    RGBColor(247, 182, 210),
+    RGBColor(199, 199, 199),
+    RGBColor(219, 219, 141),
+    RGBColor(158, 218, 229),
 ];
 
 pub(crate) fn line_comparison(
