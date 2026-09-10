@@ -853,7 +853,7 @@ pub enum PointType {
 #[derive(Clone, Copy)]
 pub enum Scale {
     Linear,
-    Logarithmic,
+    Logarithmic(f64),
 }
 
 /// Axis scale factor

@@ -2,9 +2,12 @@ mod gnuplot_backend;
 #[cfg(feature = "plotters")]
 mod plotters_backend;
 
+use criterion_plot::Scale;
 pub(crate) use gnuplot_backend::Gnuplot;
 #[cfg(feature = "plotters")]
 pub(crate) use plotters_backend::PlottersBackend;
+
+use crate::AxisScale;
 
 use {
     crate::{
@@ -32,6 +35,15 @@ pub(crate) struct PlotContext<'a> {
     pub(crate) context: &'a ReportContext,
     pub(crate) size: Option<(usize, usize)>,
     pub(crate) is_thumbnail: bool,
+}
+
+impl From<AxisScale> for Scale {
+    fn from(value: AxisScale) -> Self {
+        match value {
+            AxisScale::Linear => Scale::Linear,
+            AxisScale::Logarithmic(base) => Scale::Logarithmic(base),
+        }
+    }
 }
 
 impl<'a> PlotContext<'a> {

@@ -1,6 +1,7 @@
 use {
     super::*,
     crate::AxisScale,
+    criterion_plot::Scale,
     itertools::Itertools,
     plotters::coord::{
         ranged1d::{AsRangedCoord, ValueFormatter as PlottersValueFormatter},
@@ -41,8 +42,8 @@ pub(crate) fn line_comparison(
         .titled(&format!("{}: Comparison", title), (DEFAULT_FONT, 20))
         .unwrap();
 
-    match axis_scale {
-        AxisScale::Linear => draw_line_comparison_figure(
+    match Scale::from(axis_scale) {
+        Scale::Linear => draw_line_comparison_figure(
             line_cfg,
             root_area,
             unit,
@@ -51,12 +52,12 @@ pub(crate) fn line_comparison(
             value_type,
             series_data,
         ),
-        AxisScale::Logarithmic => draw_line_comparison_figure(
+        Scale::Logarithmic(base) => draw_line_comparison_figure(
             line_cfg,
             root_area,
             unit,
-            x_range.log_scale(),
-            y_range.log_scale(),
+            x_range.log_scale().base(base),
+            y_range.log_scale().base(base),
             value_type,
             series_data,
         ),
@@ -223,10 +224,16 @@ pub fn violin(
         .titled(&format!("{}: Violin plot", title), (DEFAULT_FONT, 20))
         .unwrap();
 
-    match axis_scale {
-        AxisScale::Linear => draw_violin_figure(root_area, unit, x_range, y_range, kdes),
-        AxisScale::Logarithmic => {
-            draw_violin_figure(root_area, unit, x_range.log_scale(), y_range, kdes);
+    match Scale::from(axis_scale) {
+        Scale::Linear => draw_violin_figure(root_area, unit, x_range, y_range, kdes),
+        Scale::Logarithmic(base) => {
+            draw_violin_figure(
+                root_area,
+                unit,
+                x_range.log_scale().base(base),
+                y_range,
+                kdes,
+            );
         }
     }
 }

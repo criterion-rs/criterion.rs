@@ -32,15 +32,6 @@ static COMPARISON_COLORS: [Color; NUM_COLORS] = [
     Color::Rgb(0, 255, 127),
 ];
 
-impl AxisScale {
-    fn to_gnuplot(self) -> Scale {
-        match self {
-            AxisScale::Linear => Scale::Linear,
-            AxisScale::Logarithmic => Scale::Logarithmic,
-        }
-    }
-}
-
 #[allow(clippy::explicit_counter_loop)]
 pub(crate) fn line_comparison(
     line_cfg: LinePlotConfig,
@@ -71,7 +62,7 @@ pub(crate) fn line_comparison(
         .set(Title(format!("{}: Comparison", gnuplot_escape(title))))
         .configure(Axis::BottomX, |a| {
             a.set(Label(format!("Input{}", input_suffix)))
-                .set(axis_scale.to_gnuplot())
+                .set(Scale::from(axis_scale))
         });
 
     let mut i = 0;
@@ -92,7 +83,7 @@ pub(crate) fn line_comparison(
         a.configure(Grid::Major, |g| g.show())
             .configure(Grid::Minor, |g| g.hide())
             .set(Label(format!("Average {} ({})", line_cfg.label, unit)))
-            .set(axis_scale.to_gnuplot())
+            .set(Scale::from(axis_scale))
     });
 
     // This assumes the curves are sorted. It also assumes that the benchmark IDs all have numeric
@@ -189,7 +180,7 @@ pub fn violin(
                 .configure(Grid::Minor, |g| g.hide())
                 .set(Range::Limits(0., max * one[0]))
                 .set(Label(format!("Average time ({})", unit)))
-                .set(axis_scale.to_gnuplot())
+                .set(Scale::from(axis_scale))
         })
         .configure(Axis::LeftY, |a| {
             a.set(Label("Input"))

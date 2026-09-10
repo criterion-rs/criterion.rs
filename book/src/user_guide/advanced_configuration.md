@@ -138,7 +138,7 @@ fn do_a_thing(x: u64) {
 
 fn bench(c: &mut Criterion) {
     let plot_config = PlotConfiguration::default()
-        .summary_scale(AxisScale::Logarithmic);
+        .summary_scale(AxisScale::Logarithmic(10.0));
 
     let mut group = c.benchmark_group("log_scale_example");
     group.plot_config(plot_config);
