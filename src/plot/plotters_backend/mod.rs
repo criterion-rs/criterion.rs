@@ -198,7 +198,7 @@ impl Plotter for PlottersBackend {
             all_curves,
             &path,
             value_type,
-            ctx.context.plot_config.summary_scale,
+            &ctx.context.plot_config.axis_scale,
         );
     }
 
@@ -215,7 +215,7 @@ impl Plotter for PlottersBackend {
             ctx.id.as_title(),
             all_curves,
             &violin_path,
-            ctx.context.plot_config.summary_scale,
+            &ctx.context.plot_config.axis_scale,
         );
     }
 

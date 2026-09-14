@@ -1,6 +1,6 @@
 use {
     super::*,
-    crate::AxisScale,
+    crate::{AxisScale, AxisScales, InputAxisScale, TimeAxisScale},
     itertools::Itertools,
     plotters::coord::{
         ranged1d::{AsRangedCoord, ValueFormatter as PlottersValueFormatter},
@@ -28,7 +28,7 @@ pub(crate) fn line_comparison(
     all_curves: &[&(&BenchmarkId, Vec<f64>)],
     path: &Path,
     value_type: ValueType,
-    axis_scale: AxisScale,
+    axis_scale: &AxisScales,
 ) {
     let (unit, series_data) = line_comparison_series_data(line_cfg, formatter, all_curves);
 
@@ -41,8 +41,14 @@ pub(crate) fn line_comparison(
         .titled(&format!("{}: Comparison", title), (DEFAULT_FONT, 20))
         .unwrap();
 
-    match axis_scale {
-        AxisScale::Linear => draw_line_comparison_figure(
+    let y_axis_scale = match line_cfg.label {
+        "time" => axis_scale.time.0,
+        "throughput" => axis_scale.throughput.0,
+        _ => unimplemented!("unexpected line plot"),
+    };
+
+    match (axis_scale.input, y_axis_scale) {
+        (InputAxisScale(AxisScale::Linear), AxisScale::Linear) => draw_line_comparison_figure(
             line_cfg,
             root_area,
             unit,
@@ -51,12 +57,32 @@ pub(crate) fn line_comparison(
             value_type,
             series_data,
         ),
-        AxisScale::Logarithmic => draw_line_comparison_figure(
+        (InputAxisScale(AxisScale::Logarithmic), AxisScale::Logarithmic) => {
+            draw_line_comparison_figure(
+                line_cfg,
+                root_area,
+                unit,
+                x_range.log_scale(),
+                y_range.log_scale(),
+                value_type,
+                series_data,
+            )
+        }
+        (InputAxisScale(AxisScale::Linear), AxisScale::Logarithmic) => draw_line_comparison_figure(
+            line_cfg,
+            root_area,
+            unit,
+            x_range,
+            y_range.log_scale(),
+            value_type,
+            series_data,
+        ),
+        (InputAxisScale(AxisScale::Logarithmic), AxisScale::Linear) => draw_line_comparison_figure(
             line_cfg,
             root_area,
             unit,
             x_range.log_scale(),
-            y_range.log_scale(),
+            y_range,
             value_type,
             series_data,
         ),
@@ -173,7 +199,7 @@ pub fn violin(
     title: &str,
     all_curves: &[&(&BenchmarkId, Vec<f64>)],
     path: &Path,
-    axis_scale: AxisScale,
+    axis_scale: &AxisScales,
 ) {
     let all_curves_vec = all_curves.iter().rev().cloned().collect::<Vec<_>>();
     let all_curves: &[&(&BenchmarkId, Vec<f64>)] = &all_curves_vec;
@@ -223,7 +249,7 @@ pub fn violin(
         .titled(&format!("{}: Violin plot", title), (DEFAULT_FONT, 20))
         .unwrap();
 
-    match axis_scale {
+    match axis_scale.input.0 {
         AxisScale::Linear => draw_violin_figure(root_area, unit, x_range, y_range, kdes),
         AxisScale::Logarithmic => {
             draw_violin_figure(root_area, unit, x_range.log_scale(), y_range, kdes);
