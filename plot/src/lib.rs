@@ -853,13 +853,18 @@ pub enum PointType {
 #[derive(Clone, Copy)]
 pub enum Scale {
     Linear,
-    Logarithmic,
+    Logarithmic(f64),
 }
 
 /// Axis scale factor
 #[allow(missing_docs)]
 #[derive(Clone, Copy)]
 pub struct ScaleFactor(pub f64);
+
+/// Axis tick formatting
+#[allow(missing_docs)]
+#[derive(Clone)]
+pub struct Format(pub String);
 
 /// Output terminal
 #[allow(missing_docs)]

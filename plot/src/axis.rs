@@ -2,11 +2,11 @@
 
 use std::borrow::Cow;
 
-use crate::map;
 use crate::traits::{Configure, Data, Set};
 use crate::{
     grid, Axis, Default, Display, Grid, Label, Range, Scale, ScaleFactor, Script, TicLabels,
 };
+use crate::{map, Format};
 
 /// Properties of the coordinate axes
 #[derive(Clone)]
@@ -14,10 +14,11 @@ pub struct Properties {
     grids: map::grid::Map<grid::Properties>,
     hidden: bool,
     label: Option<Cow<'static, str>>,
-    logarithmic: bool,
+    scale: Scale,
     range: Option<(f64, f64)>,
     scale_factor: f64,
     tics: Option<String>,
+    format: Option<String>,
 }
 
 impl Default for Properties {
@@ -26,10 +27,11 @@ impl Default for Properties {
             grids: map::grid::Map::new(),
             hidden: false,
             label: None,
-            logarithmic: false,
+            scale: Scale::Linear,
             range: None,
             scale_factor: 1.,
             tics: None,
+            format: None,
         }
     }
 }
@@ -103,10 +105,7 @@ impl Set<Scale> for Properties {
     fn set(&mut self, scale: Scale) -> &mut Properties {
         self.hidden = false;
 
-        match scale {
-            Scale::Linear => self.logarithmic = false,
-            Scale::Logarithmic => self.logarithmic = true,
-        }
+        self.scale = scale;
 
         self
     }
@@ -153,6 +152,19 @@ where
     }
 }
 
+impl Set<Format> for Properties {
+    /// Changes the *tick format* of the axis.
+    ///
+    /// Specifies how the tick values should be printed into tick labels.
+    ///
+    /// **Note** Not specified by default, plotter's default is kept.
+    ///
+    fn set(&mut self, format: Format) -> &mut Properties {
+        self.format = Some(format.0);
+
+        self
+    }
+}
 impl Script for (Axis, &Properties) {
     fn script(&self) -> String {
         let &(axis, properties) = self;
@@ -178,12 +190,16 @@ impl Script for (Axis, &Properties) {
             script.push_str(&format!("set {}range [{}:{}]\n", axis_, low, high))
         }
 
-        if properties.logarithmic {
-            script.push_str(&format!("set logscale {}\n", axis_));
+        if let Scale::Logarithmic(base) = properties.scale {
+            script.push_str(&format!("set logscale {} {}\n", axis_, base))
         }
 
         for (grid, properties) in properties.grids.iter() {
             script.push_str(&(axis, grid, properties).script());
+        }
+
+        if let Some(format) = &properties.format {
+            script.push_str(&format!("set format {} \"{}\"\n", axis_, format))
         }
 
         script
