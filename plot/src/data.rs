@@ -1,7 +1,5 @@
 use std::mem;
 
-use cast::From as _0;
-
 use crate::traits::Data;
 
 macro_rules! impl_data {
@@ -9,13 +7,13 @@ macro_rules! impl_data {
         $(
             impl Data for $ty {
                 fn f64(self) -> f64 {
-                    f64::cast(self)
+                    <f64 as cast::From<$ty>>::cast(self)
                 }
             }
 
             impl<'a> Data for &'a $ty {
                 fn f64(self) -> f64 {
-                    f64::cast(*self)
+                    <f64 as cast::From<$ty>>::cast(*self)
                 }
             }
         )+
