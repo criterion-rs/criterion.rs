@@ -1015,6 +1015,9 @@ fn parse_version_utf16(output_bytes: &[u8]) -> Result<Version, VersionError> {
         return Err(VersionError::OutputError);
     }
 
+    // Gives a warning on 1.100.0-nightly, but as_chunks was only stabilized in 1.88
+    #[allow(unknown_lints)]
+    #[allow(clippy::chunks_exact_to_as_chunks)]
     let output_as_u16: Vec<u16> = output_bytes
         .chunks_exact(2)
         .map(|chunk| u16::from_le_bytes([chunk[0], chunk[1]]))

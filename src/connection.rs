@@ -129,7 +129,7 @@ impl InnerConnection {
     }
 
     pub fn send(&mut self, message: &OutgoingMessage) -> Result<(), MessageError> {
-        self.send_buffer.truncate(0);
+        self.send_buffer.clear();
         ciborium::ser::into_writer(message, &mut self.send_buffer)?;
         let size = u32::try_from(self.send_buffer.len()).unwrap();
         let length_buf = size.to_be_bytes();
