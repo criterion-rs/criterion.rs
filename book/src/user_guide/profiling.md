@@ -4,6 +4,14 @@ When optimizing code, it's often helpful to profile it to help understand why
 it produces the measured performance characteristics. Criterion.rs has several
 features to assist with profiling benchmarks.
 
+The path to the benchmark executable used can be found in the `cargo bench` output: `  Running benches/mybenchmark.rs (/path/to/benchmark/executable)`.
+
+tl;dr: command
+```sh
+/path/to/benchmark/executable --bench --benchmark-time 5 my_group/my_function
+```
+will run the benchmark function named `my_function` in gropu `my_group` for 5 seconds.
+
 ### Note on running benchmark executables directly
 
 Because of how Cargo passes certain command-line flags (see the FAQ for more details) when running
@@ -44,6 +52,11 @@ These functions will be called before and after each benchmark when running in
 `--profile-time` mode, and will not be called otherwise. This makes it easy to
 integrate in-process profiling into benchmarks when wanted, without having the
 profiling instrumentation affect regular benchmark measurements.
+
+### Filtering benchmarks
+
+Its possible to filter to specific groups or functions by passing their respective names as an
+argument to the benchmark executable. Group names being the string specified in `Criterion::benchmark_group` and function names from `BenchmarkId`, which is the first argument to `bench_function`, `bench_with_input`, etc. 
 
 ### Enabling In-Process Profiling
 
