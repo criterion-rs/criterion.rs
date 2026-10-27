@@ -253,15 +253,14 @@ impl Label {
 pub fn classify<A>(sample: &Sample<A>) -> LabeledSample<'_, A>
 where
     A: Float,
-    usize: cast::From<A, Output = Result<usize, cast::Error>>,
 {
     let (q1, _, q3) = sample.percentiles().quartiles();
     let iqr = q3 - q1;
 
     // Mild
-    let k_m = A::cast(1.5_f32);
+    let k_m = A::from_f64(1.5);
     // Severe
-    let k_s = A::cast(3);
+    let k_s = A::from_usize(3);
 
     LabeledSample {
         fences: (
