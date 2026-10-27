@@ -20,9 +20,9 @@ where
     A: Float,
 {
     fn evaluate(&self, x: A) -> A {
-        use std::f32::consts::PI;
-
-        (x.powi(2).exp() * A::cast(2. * PI)).sqrt().recip()
+        (x.powi(2).exp() * A::from_f64(2. * std::f64::consts::PI))
+            .sqrt()
+            .recip()
     }
 }
 
