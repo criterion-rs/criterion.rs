@@ -56,10 +56,10 @@ where
 
     /// Estimates the probability density of `x`
     pub fn estimate(&self, x: A) -> A {
-        let _0 = A::cast(0);
+        let _0 = A::from_usize(0);
         let slice = self.sample;
         let h = self.bandwidth;
-        let n = A::cast(slice.len());
+        let n = A::from_usize(slice.len());
 
         let sum = slice
             .iter()
@@ -79,7 +79,7 @@ impl Bandwidth {
     fn estimate<A: Float>(self, sample: &Sample<A>) -> A {
         match self {
             Bandwidth::Silverman => {
-                let zero = A::cast(0.0);
+                let zero = A::from_usize(0);
                 let range = sample.max() - sample.min();
 
                 // When std_dev is zero (all values identical), bandwidth calculation
@@ -90,16 +90,16 @@ impl Bandwidth {
                     // minimal epsilon if the value is also zero.
                     let val = sample.mean();
                     if val.abs() > zero {
-                        val.abs() * A::cast(0.01)
+                        val.abs() * A::from_f64(0.01)
                     } else {
-                        A::cast(1e-10) // Minimal epsilon for zero values
+                        A::from_f64(1e-10) // Minimal epsilon for zero values
                     }
                 } else {
                     // Non-constant data: use Silverman's rule of thumb
                     let sigma = sample.std_dev(None);
-                    let factor = A::cast(4. / 3.);
-                    let exponent = A::cast(1. / 5.);
-                    let n = A::cast(sample.len());
+                    let factor = A::from_f64(4. / 3.);
+                    let exponent = A::from_f64(1. / 5.);
+                    let n = A::from_usize(sample.len());
                     sigma * (factor / n).powf(exponent)
                 }
             }
