@@ -2,25 +2,64 @@ use std::mem;
 
 use crate::traits::Data;
 
-macro_rules! impl_data {
+// Strictly lossless conversions
+macro_rules! impl_data_lossless {
     ($($ty:ty),+) => {
         $(
             impl Data for $ty {
+                #[inline]
                 fn f64(self) -> f64 {
-                    <f64 as cast::From<$ty>>::cast(self)
+                    f64::from(self)
                 }
             }
 
             impl<'a> Data for &'a $ty {
+                #[inline]
                 fn f64(self) -> f64 {
-                    <f64 as cast::From<$ty>>::cast(*self)
+                    f64::from(*self)
                 }
             }
         )+
+    };
+}
+
+// Conversions with possible precision loss (>53 bits) using `as`
+macro_rules! impl_data_lossy {
+    ($($ty:ty),+) => {
+        $(
+            impl Data for $ty {
+                #[inline]
+                fn f64(self) -> f64 {
+                    self as f64
+                }
+            }
+
+            impl<'a> Data for &'a $ty {
+                #[inline]
+                fn f64(self) -> f64 {
+                    (*self) as f64
+                }
+            }
+        )+
+    };
+}
+
+impl_data_lossless!(f32, i8, i16, i32, u8, u16, u32);
+impl_data_lossy!(i64, u64, isize, usize);
+
+impl Data for f64 {
+    #[inline]
+    fn f64(self) -> f64 {
+        self
     }
 }
 
-impl_data!(f32, f64, i16, i32, i64, i8, isize, u16, u32, u64, u8, usize);
+impl Data for &f64 {
+    #[inline]
+    fn f64(self) -> f64 {
+        *self
+    }
+}
 
 #[derive(Clone)]
 pub struct Matrix {
