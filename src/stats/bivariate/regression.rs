@@ -31,13 +31,13 @@ where
     ///
     /// - Time: `O(length)`
     pub fn r_squared(&self, data: &Data<'_, A, A>) -> A {
-        let _0 = A::cast(0);
-        let _1 = A::cast(1);
+        let _0 = A::from_usize(0);
+        let _1 = A::from_usize(1);
         let m = self.0;
         let xs = data.0;
         let ys = data.1;
 
-        let n = A::cast(xs.len());
+        let n = A::from_usize(xs.len());
         let y_bar = crate::stats::sum(ys) / n;
 
         let mut ss_res = _0;

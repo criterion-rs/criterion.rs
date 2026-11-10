@@ -52,7 +52,7 @@ where
     pub fn mean(&self) -> A {
         let n = self.len();
 
-        self.sum() / A::cast(n)
+        self.sum() / A::from_usize(n)
     }
 
     /// Returns the median absolute deviation
@@ -61,10 +61,7 @@ where
     ///
     /// - Time: `O(length)`
     /// - Memory: `O(length)`
-    pub fn median_abs_dev(&self, median: Option<A>) -> A
-    where
-        usize: cast::From<A, Output = Result<usize, cast::Error>>,
-    {
+    pub fn median_abs_dev(&self, median: Option<A>) -> A {
         let median = median.unwrap_or_else(|| self.percentiles().median());
 
         // NB Although this operation can be SIMD accelerated, the gain is negligible because the
@@ -73,18 +70,15 @@ where
 
         let abs_devs: &Self = Self::new(&abs_devs);
 
-        abs_devs.percentiles().median() * A::cast(1.4826)
+        abs_devs.percentiles().median() * A::from_f64(1.4826)
     }
 
     /// Returns the median absolute deviation as a percentage of the median
     ///
     /// - Time: `O(length)`
     /// - Memory: `O(length)`
-    pub fn median_abs_dev_pct(&self) -> A
-    where
-        usize: cast::From<A, Output = Result<usize, cast::Error>>,
-    {
-        let _100 = A::cast(100);
+    pub fn median_abs_dev_pct(&self) -> A {
+        let _100 = A::from_usize(100);
         let median = self.percentiles().median();
         let mad = self.median_abs_dev(Some(median));
 
@@ -110,10 +104,7 @@ where
     ///
     /// - Time: `O(N log N) where N = length`
     /// - Memory: `O(length)`
-    pub fn percentiles(&self) -> Percentiles<A>
-    where
-        usize: cast::From<A, Output = Result<usize, cast::Error>>,
-    {
+    pub fn percentiles(&self) -> Percentiles<A> {
         use std::cmp::Ordering;
 
         // NB This function assumes that there are no `NaN`s in the sample
@@ -151,7 +142,7 @@ where
     ///
     /// - Time: `O(length)`
     pub fn std_dev_pct(&self) -> A {
-        let _100 = A::cast(100);
+        let _100 = A::from_usize(100);
         let mean = self.mean();
         let std_dev = self.std_dev(Some(mean));
 
@@ -171,8 +162,8 @@ where
     pub fn t(&self, other: &Sample<A>) -> A {
         let (x_bar, y_bar) = (self.mean(), other.mean());
         let (s2_x, s2_y) = (self.var(Some(x_bar)), other.var(Some(y_bar)));
-        let n_x = A::cast(self.len());
-        let n_y = A::cast(other.len());
+        let n_x = A::from_usize(self.len());
+        let n_y = A::from_usize(other.len());
         let num = x_bar - y_bar;
         let den = (s2_x / n_x + s2_y / n_y).sqrt();
 
@@ -193,9 +184,9 @@ where
         let sum = slice
             .iter()
             .map(|&x| (x - mean).powi(2))
-            .fold(A::cast(0), Add::add);
+            .fold(A::from_usize(0), Add::add);
 
-        sum / A::cast(slice.len() - 1)
+        sum / A::from_usize(slice.len() - 1)
     }
 
     // TODO Remove the `T` parameter in favor of `S::Output`
@@ -249,18 +240,12 @@ where
     }
 
     #[cfg(test)]
-    pub fn iqr(&self) -> A
-    where
-        usize: cast::From<A, Output = Result<usize, cast::Error>>,
-    {
+    pub fn iqr(&self) -> A {
         self.percentiles().iqr()
     }
 
     #[cfg(test)]
-    pub fn median(&self) -> A
-    where
-        usize: cast::From<A, Output = Result<usize, cast::Error>>,
-    {
+    pub fn median(&self) -> A {
         self.percentiles().median()
     }
 }

@@ -37,13 +37,10 @@ where
     /// # Panics
     ///
     /// Panics if the `confidence_level` is not in the `(0, 1)` range.
-    pub fn confidence_interval(&self, confidence_level: A) -> (A, A)
-    where
-        usize: cast::From<A, Output = Result<usize, cast::Error>>,
-    {
-        let _0 = A::cast(0);
-        let _1 = A::cast(1);
-        let _50 = A::cast(50);
+    pub fn confidence_interval(&self, confidence_level: A) -> (A, A) {
+        let _0 = A::from_usize(0);
+        let _1 = A::from_usize(1);
+        let _50 = A::from_usize(50);
 
         assert!(confidence_level > _0 && confidence_level < _1);
 
@@ -64,12 +61,12 @@ where
         let n = self.0.len();
         let hits = self.0.iter().filter(|&&x| x < t).count();
 
-        let tails = A::cast(match *tails {
+        let tails = A::from_usize(match *tails {
             Tails::One => 1,
             Tails::Two => 2,
         });
 
-        A::cast(cmp::min(hits, n - hits)) / A::cast(n) * tails
+        A::from_usize(cmp::min(hits, n - hits)) / A::from_usize(n) * tails
     }
 }
 
@@ -97,7 +94,7 @@ where
 {
     xs.iter()
         .zip(ys)
-        .fold(A::cast(0), |acc, (&x, &y)| acc + x * y)
+        .fold(A::from_usize(0), |acc, (&x, &y)| acc + x * y)
 }
 
 fn sum<A>(xs: &[A]) -> A
@@ -106,5 +103,5 @@ where
 {
     use std::ops::Add;
 
-    xs.iter().cloned().fold(A::cast(0), Add::add)
+    xs.iter().cloned().fold(A::from_usize(0), Add::add)
 }
